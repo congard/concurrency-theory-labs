@@ -1,0 +1,1592 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{lab4}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+ 
+        \textbf{Laboratorium 4}
+ 
+        \vspace{0.5cm}
+        Producenci i konsumenci z losowa ilością pobieranych i wstawianych porcji
+             
+        \vspace{1.5cm}
+ 
+        \textbf{Danylo Knapp}
+
+        \vfill
+
+        \includegraphics[width=0.4\textwidth]{../report-templates/agh-logo.png}
+ 
+        \vfill
+             
+        Teoria Współbieżności
+             
+        \vspace{0.8cm}
+
+        Wydział Informatyki\\
+        Akademia Górniczo-Hutnicza\\
+        im. Stanisława Staszica w Krakowie\\
+        29.10.23
+             
+    \end{center}
+\end{titlepage}
+    
+    
+
+    
+    \hypertarget{treux15bux107-zadania}{%
+\section{Treść zadania}\label{treux15bux107-zadania}}
+
+Producenci i konsumenci z losowa ilością pobieranych i wstawianych
+porcji:
+
+\begin{itemize}
+\tightlist
+\item
+  Bufor o rozmiarze \texttt{2M}
+\item
+  Jest \texttt{m} producentów i \texttt{n} konsumentów
+\item
+  Producent wstawia do bufora losową liczbę elementów (nie więcej niż
+  \texttt{M})
+\item
+  Konsument pobiera losową liczbę elementów (nie więcej niż \texttt{M})
+\item
+  Zaimplementować przy pomocy \emph{monitorów Javy} oraz mechanizmów
+  \emph{Java Concurrency Utilities}
+\item
+  Przeprowadzić porównanie wydajności (np. czas wykonywania) vs.~różne
+  parametry, zrobić wykresy i je skomentować
+\end{itemize}
+
+    \hypertarget{rozwiux105zanie}{%
+\section{Rozwiązanie}\label{rozwiux105zanie}}
+
+Przed aktualnym rozpoczęciem rozwiązania warto najpierw przypomnieć, na
+czym dokładnie polega problem producentów-konsumerów (Producer-consumer
+problem).
+
+\textbf{Problem producenta i konsumenta} - klasyczny informatyczny
+problem synchronizacji. W problemie występują dwa rodzaje procesów:
+producent i konsument, którzy dzielą wspólny zasób -- bufor -- dla
+produkowanych (i konsumowanych) jednostek. Zadaniem producenta jest
+wytworzenie produktu, umieszczenie go w buforze i rozpoczęcie pracy od
+nowa. W tym samym czasie konsument ma pobrać produkt z bufora. Problemem
+jest taka synchronizacja procesów, żeby producent nie dodawał nowych
+jednostek gdy bufor jest pełny, a konsument nie pobierał gdy bufor jest
+pusty.
+
+Struktura rozwiązania wygląda następująco:
+
+\begin{verbatim}
+tw-lab4/src/main/java/pl/edu/agh/tw/knapp/lab4
+    Box.java
+    Buffer.java
+    Consumer.java
+    Logger.java
+    Main.java
+    Producer.java
+    RandomSleeper.java
+    SemaphoreBuffer.java
+    WorkerThread.java
+\end{verbatim}
+
+Poniżej zostaną opisane poszczególne klasy.
+
+    \hypertarget{buffert}{%
+\subsection{\texorpdfstring{\texttt{Buffer\textless{}T\textgreater{}}}{Buffer\textless T\textgreater{}}}\label{buffert}}
+
+Jest to klasa reprezentująca interfejs bufora.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Buffer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{List}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{interface} \BuiltInTok{Buffer}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \OperatorTok{\{}
+    \CommentTok{/**}
+     \CommentTok{*}\NormalTok{ Puts the specified values to the buffer}
+\CommentTok{     * @}\NormalTok{param values The values to put}
+     \CommentTok{*} \CommentTok{@}\NormalTok{return }\CommentTok{\textasciigrave{}}\NormalTok{true}\CommentTok{\textasciigrave{}}\NormalTok{ if success}\CommentTok{,} \CommentTok{\textasciigrave{}}\NormalTok{false}\CommentTok{\textasciigrave{}}\NormalTok{ otherwise}
+     \CommentTok{*/}
+    \DataTypeTok{boolean} \FunctionTok{put}\OperatorTok{(}\BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ values}\OperatorTok{);}
+
+    \CommentTok{/**}
+     \CommentTok{*}\NormalTok{ Returns the specified amount of elements from the buffer}
+\CommentTok{     * @}\NormalTok{param amount The amount of elements to return}
+     \CommentTok{*} \CommentTok{@}\NormalTok{return The elements from the buffer}
+     \CommentTok{*/}
+    \BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \FunctionTok{get}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ amount}\OperatorTok{);}
+
+    \CommentTok{/**}
+     \CommentTok{*}\NormalTok{ Returns the capacity}\CommentTok{,}\NormalTok{ i}\CommentTok{.}\NormalTok{e}\CommentTok{.}\NormalTok{ the maximum count of elements}
+     \CommentTok{*}\NormalTok{ that the buffer can hold}
+\CommentTok{     * @}\NormalTok{return The buffer}\CommentTok{\textquotesingle{}}\NormalTok{s capacity}
+     \CommentTok{*/}
+    \DataTypeTok{int} \FunctionTok{capacity}\OperatorTok{();}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Metoda \texttt{put} służy do umiszczenia elementów z listy
+  \texttt{values} w buforze
+\item
+  Metoda \texttt{get} zwraca określoną liczbę elementów bufora jako
+  listę
+\item
+  Metoda \texttt{capacity} zwraca maksymalną liczbę elementów które mogą
+  być przechowywane w buforze naraz (pojemność)
+\end{itemize}
+
+    \hypertarget{semaphorebuffert}{%
+\subsection{\texorpdfstring{\texttt{SemaphoreBuffer\textless{}T\textgreater{}}}{SemaphoreBuffer\textless T\textgreater{}}}\label{semaphorebuffert}}
+
+Implementacja bufora za pomocą semaforów. Również w celach
+synchronizacji skorzystano z monitorów (metod synchronicznych).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// SemaphoreBuffer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{nio}\OperatorTok{.}\ImportTok{BufferOverflowException}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{nio}\OperatorTok{.}\ImportTok{BufferUnderflowException}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{ArrayList}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{Collections}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{List}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{concurrent}\OperatorTok{.}\ImportTok{Semaphore}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{concurrent}\OperatorTok{.}\ImportTok{TimeUnit}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ SemaphoreBuffer}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \KeywordTok{implements} \BuiltInTok{Buffer}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ buffer}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{int}\NormalTok{ bufferPos }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{int}\NormalTok{ bufferActualSize }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{long}\NormalTok{ timeoutMs}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{Semaphore}\NormalTok{ readyPortions}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{Semaphore}\NormalTok{ availablePositions}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{SemaphoreBuffer}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ size}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{(}\NormalTok{size}\OperatorTok{,} \DecValTok{1000L}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \FunctionTok{SemaphoreBuffer}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ size}\OperatorTok{,} \DataTypeTok{long}\NormalTok{ timeoutMs}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{timeoutMs} \OperatorTok{=}\NormalTok{ timeoutMs}\OperatorTok{;}
+\NormalTok{        buffer }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{ArrayList}\OperatorTok{\textless{}\textgreater{}(}\BuiltInTok{Collections}\OperatorTok{.}\FunctionTok{nCopies}\OperatorTok{(}\NormalTok{size}\OperatorTok{,} \KeywordTok{null}\OperatorTok{));}
+\NormalTok{        readyPortions }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Semaphore}\OperatorTok{(}\DecValTok{0}\OperatorTok{);}
+\NormalTok{        availablePositions }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Semaphore}\OperatorTok{(}\NormalTok{size}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \DataTypeTok{boolean} \FunctionTok{tryAcquireUninterruptibly}\OperatorTok{(}\BuiltInTok{Semaphore}\NormalTok{ semaphore}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ permits}\OperatorTok{)} \OperatorTok{\{}
+        \ControlFlowTok{try} \OperatorTok{\{}
+            \ControlFlowTok{if} \OperatorTok{(}\NormalTok{timeoutMs }\OperatorTok{\textgreater{}} \DecValTok{0L}\OperatorTok{)} \OperatorTok{\{}
+                \ControlFlowTok{return}\NormalTok{ semaphore}\OperatorTok{.}\FunctionTok{tryAcquire}\OperatorTok{(}\NormalTok{permits}\OperatorTok{,}\NormalTok{ timeoutMs}\OperatorTok{,} \BuiltInTok{TimeUnit}\OperatorTok{.}\FunctionTok{MILLISECONDS}\OperatorTok{);}
+            \OperatorTok{\}} \ControlFlowTok{else} \OperatorTok{\{}
+\NormalTok{                semaphore}\OperatorTok{.}\FunctionTok{acquire}\OperatorTok{(}\NormalTok{permits}\OperatorTok{);}
+                \ControlFlowTok{return} \KeywordTok{true}\OperatorTok{;}
+            \OperatorTok{\}}
+        \OperatorTok{\}} \ControlFlowTok{catch} \OperatorTok{(}\BuiltInTok{InterruptedException}\NormalTok{ e}\OperatorTok{)} \OperatorTok{\{}
+            \ControlFlowTok{throw} \KeywordTok{new} \BuiltInTok{RuntimeException}\OperatorTok{(}\NormalTok{e}\OperatorTok{);}
+        \OperatorTok{\}}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \KeywordTok{synchronized} \DataTypeTok{void} \FunctionTok{addAll}\OperatorTok{(}\BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ values}\OperatorTok{)} \OperatorTok{\{}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{var}\NormalTok{ val }\OperatorTok{:}\NormalTok{ values}\OperatorTok{)} \OperatorTok{\{}
+            \DataTypeTok{var}\NormalTok{ index }\OperatorTok{=} \OperatorTok{(}\NormalTok{bufferPos }\OperatorTok{+}\NormalTok{ bufferActualSize}\OperatorTok{)} \OperatorTok{\%} \FunctionTok{capacity}\OperatorTok{();}
+            \OperatorTok{++}\NormalTok{bufferActualSize}\OperatorTok{;}
+\NormalTok{            buffer}\OperatorTok{.}\FunctionTok{set}\OperatorTok{(}\NormalTok{index}\OperatorTok{,}\NormalTok{ val}\OperatorTok{);}
+        \OperatorTok{\}}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{boolean} \FunctionTok{put}\OperatorTok{(}\BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ values}\OperatorTok{)} \OperatorTok{\{}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{values}\OperatorTok{.}\FunctionTok{size}\OperatorTok{()} \OperatorTok{\textgreater{}} \FunctionTok{capacity}\OperatorTok{())}
+            \ControlFlowTok{throw} \KeywordTok{new} \BuiltInTok{BufferOverflowException}\OperatorTok{();}
+
+        \ControlFlowTok{if} \OperatorTok{(!}\FunctionTok{tryAcquireUninterruptibly}\OperatorTok{(}\NormalTok{availablePositions}\OperatorTok{,}\NormalTok{ values}\OperatorTok{.}\FunctionTok{size}\OperatorTok{()))}
+            \ControlFlowTok{return} \KeywordTok{false}\OperatorTok{;}
+
+        \FunctionTok{addAll}\OperatorTok{(}\NormalTok{values}\OperatorTok{);}
+
+\NormalTok{        readyPortions}\OperatorTok{.}\FunctionTok{release}\OperatorTok{(}\NormalTok{values}\OperatorTok{.}\FunctionTok{size}\OperatorTok{());}
+
+        \ControlFlowTok{return} \KeywordTok{true}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \KeywordTok{synchronized} \BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \FunctionTok{getAll}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ amount}\OperatorTok{)} \OperatorTok{\{}
+        \BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ result }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{ArrayList}\OperatorTok{\textless{}\textgreater{}(}\NormalTok{amount}\OperatorTok{);}
+
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ amount}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{            result}\OperatorTok{.}\FunctionTok{add}\OperatorTok{(}\NormalTok{buffer}\OperatorTok{.}\FunctionTok{get}\OperatorTok{(}\NormalTok{bufferPos}\OperatorTok{));}
+\NormalTok{            bufferPos }\OperatorTok{=} \OperatorTok{(}\NormalTok{bufferPos }\OperatorTok{+} \DecValTok{1}\OperatorTok{)} \OperatorTok{\%} \FunctionTok{capacity}\OperatorTok{();}
+            \OperatorTok{{-}{-}}\NormalTok{bufferActualSize}\OperatorTok{;}
+        \OperatorTok{\}}
+
+        \ControlFlowTok{return}\NormalTok{ result}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \BuiltInTok{List}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \FunctionTok{get}\OperatorTok{(}\DataTypeTok{int}\NormalTok{ amount}\OperatorTok{)} \OperatorTok{\{}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{amount }\OperatorTok{\textgreater{}} \FunctionTok{capacity}\OperatorTok{())}
+            \ControlFlowTok{throw} \KeywordTok{new} \BuiltInTok{BufferUnderflowException}\OperatorTok{();}
+
+        \ControlFlowTok{if} \OperatorTok{(!}\FunctionTok{tryAcquireUninterruptibly}\OperatorTok{(}\NormalTok{readyPortions}\OperatorTok{,}\NormalTok{ amount}\OperatorTok{))}
+            \ControlFlowTok{return} \BuiltInTok{List}\OperatorTok{.}\FunctionTok{of}\OperatorTok{();}
+
+        \DataTypeTok{var}\NormalTok{ result }\OperatorTok{=} \FunctionTok{getAll}\OperatorTok{(}\NormalTok{amount}\OperatorTok{);}
+
+\NormalTok{        availablePositions}\OperatorTok{.}\FunctionTok{release}\OperatorTok{(}\NormalTok{amount}\OperatorTok{);}
+
+        \ControlFlowTok{return}\NormalTok{ result}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{int} \FunctionTok{capacity}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ buffer}\OperatorTok{.}\FunctionTok{size}\OperatorTok{();}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{logger}{%
+\subsection{\texorpdfstring{\texttt{Logger}}{Logger}}\label{logger}}
+
+Jest to klasa służąca do wypisywania logów. Podczas implementacji, w
+celach ułatwienia zarządzaniem logami, użyto wzorca \emph{Singleton}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Logger.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Consumer}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class} \BuiltInTok{Logger} \OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \BuiltInTok{Logger}\NormalTok{ logger }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Logger}\OperatorTok{();}
+
+    \KeywordTok{private}\NormalTok{ Consumer}\OperatorTok{\textless{}}\BuiltInTok{String}\OperatorTok{\textgreater{}}\NormalTok{ consumer }\OperatorTok{=} \FunctionTok{defaultConsumer}\OperatorTok{();}
+    
+    \KeywordTok{private} \DataTypeTok{static}\NormalTok{ Consumer}\OperatorTok{\textless{}}\BuiltInTok{String}\OperatorTok{\textgreater{}} \FunctionTok{defaultConsumer}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return} \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{::}\NormalTok{println}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \BuiltInTok{Logger}\OperatorTok{()} \OperatorTok{\{}
+        \CommentTok{// empty}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{log}\OperatorTok{(}\BuiltInTok{String}\NormalTok{ tag}\OperatorTok{,} \BuiltInTok{Object}\NormalTok{ o}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        consumer}\OperatorTok{.}\FunctionTok{accept}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}\StringTok{"[}\SpecialCharTok{\%s}\StringTok{] }\SpecialCharTok{\%s}\StringTok{"}\OperatorTok{,}\NormalTok{ tag}\OperatorTok{,}\NormalTok{ o}\OperatorTok{));}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{log}\OperatorTok{(}\BuiltInTok{Object}\NormalTok{ o}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        consumer}\OperatorTok{.}\FunctionTok{accept}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{.}\FunctionTok{valueOf}\OperatorTok{(}\NormalTok{o}\OperatorTok{));}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{setConsumer}\OperatorTok{(}\NormalTok{Consumer}\OperatorTok{\textless{}}\BuiltInTok{String}\OperatorTok{\textgreater{}}\NormalTok{ consumer}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{consumer} \OperatorTok{=}\NormalTok{ consumer}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{mute}\OperatorTok{()} \OperatorTok{\{}
+        \FunctionTok{setConsumer}\OperatorTok{(}\NormalTok{s }\OperatorTok{{-}\textgreater{}} \OperatorTok{\{\});}
+    \OperatorTok{\}}
+    
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{unmute}\OperatorTok{()} \OperatorTok{\{}
+        \FunctionTok{setConsumer}\OperatorTok{(}\FunctionTok{defaultConsumer}\OperatorTok{());}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{static} \BuiltInTok{Logger} \FunctionTok{getInstance}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ logger}\OperatorTok{;}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{log(String\ tag,\ Object\ o)} wypisuje log wraz z tagiem (np.
+  \emph{Consumer}, \emph{Producer} itd. Chodzi tu o rozpoznanie źródła
+  pochodzenia informacji). Obiekt \texttt{o} może mieć wartość
+  \texttt{null}.
+\item
+  \texttt{log(Object\ o)} wypisuje tekstową reprezentację obiektu
+  \texttt{o}. Obiekt \texttt{o} może mieć wartość \texttt{null}.
+\item
+  \texttt{setConsumer(Consumer\textless{}String\textgreater{}\ consumer)}
+  umożliwia ustawienie kastomowego konsumenta logów. \textbf{Uwaga:}
+  \texttt{Consumer\textless{}T\textgreater{}} pochodzi z pakietu
+  \texttt{java.util.function}!
+\item
+  \texttt{mute()} wycisza Logger
+\item
+  \texttt{unmute()} przeciwieństwo metody \texttt{mute}: jako konsument
+  zostanie użyta domyślna implementacja wypisująca na standardowym
+  wyjściu
+\item
+  \texttt{getInstance()} zwraca instancję klasy \texttt{Logger}
+\end{itemize}
+
+    \hypertarget{randomsleeper}{%
+\subsection{\texorpdfstring{\texttt{RandomSleeper}}{RandomSleeper}}\label{randomsleeper}}
+
+Klasa służąca do uśpienia wątku na pewien czas, losowany z przedziału
+\texttt{{[}delayMinMs,\ delayMaxMs)}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// RandomSleeper.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{Random}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ RandomSleeper }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{Random}\NormalTok{ delayRandom }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Random}\OperatorTok{();}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{long}\NormalTok{ delayMinMs}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{long}\NormalTok{ delayMaxMs}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{RandomSleeper}\OperatorTok{(}\DataTypeTok{long}\NormalTok{ delayMinMs}\OperatorTok{,} \DataTypeTok{long}\NormalTok{ delayMaxMs}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{delayMinMs} \OperatorTok{=}\NormalTok{ delayMinMs}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{delayMaxMs} \OperatorTok{=}\NormalTok{ delayMaxMs}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{sleep}\OperatorTok{()} \KeywordTok{throws} \BuiltInTok{InterruptedException} \OperatorTok{\{}
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{delayMinMs }\OperatorTok{==} \DecValTok{0} \OperatorTok{\&\&}\NormalTok{ delayMaxMs }\OperatorTok{==} \DecValTok{0}\OperatorTok{)}
+            \ControlFlowTok{return}\OperatorTok{;}
+        \DataTypeTok{var}\NormalTok{ delay }\OperatorTok{=}\NormalTok{ delayRandom}\OperatorTok{.}\FunctionTok{nextLong}\OperatorTok{(}\NormalTok{delayMinMs}\OperatorTok{,}\NormalTok{ delayMaxMs}\OperatorTok{);}
+        \BuiltInTok{Thread}\OperatorTok{.}\FunctionTok{sleep}\OperatorTok{(}\NormalTok{delay}\OperatorTok{);}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{boxt}{%
+\subsection{\texorpdfstring{\texttt{Box\textless{}T\textgreater{}}}{Box\textless T\textgreater{}}}\label{boxt}}
+
+Służy do przechowywania wartości typu \texttt{T}. Pozwala na tworzenie
+\texttt{final} referencji i zmianę przechowywanej wartości.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class} \BuiltInTok{Box}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \OperatorTok{\{}
+    \KeywordTok{private}\NormalTok{ T value}\OperatorTok{;}
+
+    \KeywordTok{public} \BuiltInTok{Box}\OperatorTok{()} \OperatorTok{\{}
+        \CommentTok{// empty}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \BuiltInTok{Box}\OperatorTok{(}\NormalTok{T value}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{value} \OperatorTok{=}\NormalTok{ value}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{public}\NormalTok{ T }\FunctionTok{getValue}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ value}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{setValue}\OperatorTok{(}\NormalTok{T value}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{value} \OperatorTok{=}\NormalTok{ value}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \BuiltInTok{String} \FunctionTok{toString}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return} \StringTok{"Box \{"} \OperatorTok{+}\NormalTok{ value }\OperatorTok{+} \CharTok{\textquotesingle{}\}\textquotesingle{}}\OperatorTok{;}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{workerthreadt}{%
+\subsection{\texorpdfstring{\texttt{WorkerThread\textless{}T\textgreater{}}}{WorkerThread\textless T\textgreater{}}}\label{workerthreadt}}
+
+Klasa nadrzędna dla producentów i konsumentów. Zawiera referencję na
+bufor, udostępnia funkcje używane w klasach potomnych.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// WorkerThread.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{Random}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Function}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ WorkerThread}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}} \KeywordTok{extends} \BuiltInTok{Thread} \OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{static} \BuiltInTok{Logger}\NormalTok{ logger }\OperatorTok{=} \BuiltInTok{Logger}\OperatorTok{.}\FunctionTok{getInstance}\OperatorTok{();}
+
+    \KeywordTok{protected} \DataTypeTok{final} \BuiltInTok{Buffer}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ buff}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ RandomSleeper randomSleeper}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ iterCount}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{Random}\NormalTok{ randM }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Random}\OperatorTok{();}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ m}\OperatorTok{;}
+
+    \CommentTok{/**}
+     \CommentTok{*}\NormalTok{ The main constructor}
+\CommentTok{     * @}\NormalTok{param buff The buffer to get from}
+     \CommentTok{*} \CommentTok{@}\NormalTok{param delayMinMs The minimum random delay}\CommentTok{,}\NormalTok{ in ms}
+     \CommentTok{*} \CommentTok{@}\NormalTok{param delayMaxMs The maximum random delay}\CommentTok{,}\NormalTok{ in ms}
+     \CommentTok{*} \CommentTok{@}\NormalTok{param iterCount The number of iterations}
+     \CommentTok{*} \CommentTok{@}\NormalTok{param m The consumed element count upper bound}
+     \CommentTok{*/}
+    \KeywordTok{public} \FunctionTok{WorkerThread}\OperatorTok{(}
+            \BuiltInTok{Buffer}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ buff}\OperatorTok{,}
+            \DataTypeTok{long}\NormalTok{ delayMinMs}\OperatorTok{,} \DataTypeTok{long}\NormalTok{ delayMaxMs}\OperatorTok{,}
+            \DataTypeTok{int}\NormalTok{ iterCount}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ m}
+    \OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{buff} \OperatorTok{=}\NormalTok{ buff}\OperatorTok{;}
+\NormalTok{        randomSleeper }\OperatorTok{=} \KeywordTok{new} \FunctionTok{RandomSleeper}\OperatorTok{(}\NormalTok{delayMinMs}\OperatorTok{,}\NormalTok{ delayMaxMs}\OperatorTok{);}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{iterCount} \OperatorTok{=}\NormalTok{ iterCount}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{m} \OperatorTok{=}\NormalTok{ m}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \FunctionTok{WorkerThread}\OperatorTok{(}\BuiltInTok{Buffer}\OperatorTok{\textless{}}\NormalTok{T}\OperatorTok{\textgreater{}}\NormalTok{ buff}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{(}\NormalTok{buff}\OperatorTok{,} \DecValTok{0}\OperatorTok{,} \DecValTok{0}\OperatorTok{,} \DecValTok{100}\OperatorTok{,} \DecValTok{10}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{int} \FunctionTok{getIterCount}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ iterCount}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{protected} \DataTypeTok{void} \FunctionTok{randomDelay}\OperatorTok{()} \KeywordTok{throws} \BuiltInTok{InterruptedException} \OperatorTok{\{}
+\NormalTok{        randomSleeper}\OperatorTok{.}\FunctionTok{sleep}\OperatorTok{();}
+    \OperatorTok{\}}
+
+    \KeywordTok{protected} \DataTypeTok{void} \FunctionTok{log}\OperatorTok{(}\BuiltInTok{Object}\NormalTok{ o}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        logger}\OperatorTok{.}\FunctionTok{log}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}\StringTok{"}\SpecialCharTok{\%s}\StringTok{ id }\SpecialCharTok{\%s}\StringTok{"}\OperatorTok{,} \FunctionTok{getClass}\OperatorTok{().}\FunctionTok{getSimpleName}\OperatorTok{(),} \FunctionTok{getId}\OperatorTok{()),}\NormalTok{ o}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{protected} \DataTypeTok{void} \FunctionTok{iterate}\OperatorTok{(}\NormalTok{Function}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{,} \BuiltInTok{Boolean}\OperatorTok{\textgreater{}}\NormalTok{ function}\OperatorTok{)} \OperatorTok{\{}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ iterCount}\OperatorTok{;}\NormalTok{ i}\OperatorTok{++)} \OperatorTok{\{}
+            \ControlFlowTok{try} \OperatorTok{\{}
+                \FunctionTok{randomDelay}\OperatorTok{();}
+            \OperatorTok{\}} \ControlFlowTok{catch} \OperatorTok{(}\BuiltInTok{InterruptedException}\NormalTok{ e}\OperatorTok{)} \OperatorTok{\{}
+                \ControlFlowTok{throw} \KeywordTok{new} \BuiltInTok{RuntimeException}\OperatorTok{(}\NormalTok{e}\OperatorTok{);}
+            \OperatorTok{\}}
+
+            \ControlFlowTok{if} \OperatorTok{(!}\NormalTok{function}\OperatorTok{.}\FunctionTok{apply}\OperatorTok{(}\NormalTok{i}\OperatorTok{))} \OperatorTok{\{}
+                \ControlFlowTok{break}\OperatorTok{;}
+            \OperatorTok{\}}
+        \OperatorTok{\}}
+    \OperatorTok{\}}
+
+    \KeywordTok{protected} \DataTypeTok{int} \FunctionTok{getRandomizedM}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ randM}\OperatorTok{.}\FunctionTok{nextInt}\OperatorTok{(}\NormalTok{m}\OperatorTok{)} \OperatorTok{+} \DecValTok{1}\OperatorTok{;}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Jeżeli przyczyna istnienia większości metod jest oczywista i została
+wielokrotnie omówiona w sprawozdaniach z poprzednich laboratoriów,
+metoda \texttt{iterate} jest nowością i zasługuje na krótki opis.
+
+Metoda \texttt{iterate} służy do przeiterowania pętlą od \texttt{0} do
+\texttt{iterCount\ -\ 1} (włącznie), ponadto:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Przed każdą iteracją wątek zostanie uśpiony na pewien czas, losowany z
+  przedziału \texttt{{[}delayMinMs,\ delayMaxMs)}
+\item
+  Następnie zostanie wywołany callback \texttt{function} z argumentem
+  reprezentującym indeks iteracji
+\item
+  Jeżeli callback zwróci \texttt{false}, pętla zostanie przerwana
+\end{enumerate}
+
+Ta metoda jest głównie po to, aby uprościć implementacje producenta i
+konsumenta.
+
+    \hypertarget{consumer}{%
+\subsection{\texorpdfstring{\texttt{Consumer}}{Consumer}}\label{consumer}}
+
+Implementacja konsumenta pobierającego pewną liczbę elementów z buforu,
+losowaną za pomocą funkcji \texttt{WorkerThread\#getRandomizedM}, i
+następnie wypisującego te elementy.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Consumer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Consumer }\KeywordTok{extends}\NormalTok{ WorkerThread}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}} \OperatorTok{\{}
+
+    \KeywordTok{public} \FunctionTok{Consumer}\OperatorTok{(}
+            \BuiltInTok{Buffer}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ buff}\OperatorTok{,}
+            \DataTypeTok{long}\NormalTok{ delayMinMs}\OperatorTok{,} \DataTypeTok{long}\NormalTok{ delayMaxMs}\OperatorTok{,}
+            \DataTypeTok{int}\NormalTok{ iterCount}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ m}
+    \OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{super}\OperatorTok{(}\NormalTok{buff}\OperatorTok{,}\NormalTok{ delayMinMs}\OperatorTok{,}\NormalTok{ delayMaxMs}\OperatorTok{,}\NormalTok{ iterCount}\OperatorTok{,}\NormalTok{ m}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \FunctionTok{Consumer}\OperatorTok{(}\BuiltInTok{Buffer}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ buff}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{super}\OperatorTok{(}\NormalTok{buff}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \FunctionTok{iterate}\OperatorTok{(}\NormalTok{i }\OperatorTok{{-}\textgreater{}} \OperatorTok{\{}
+            \DataTypeTok{var}\NormalTok{ values }\OperatorTok{=}\NormalTok{ buff}\OperatorTok{.}\FunctionTok{get}\OperatorTok{(}\FunctionTok{getRandomizedM}\OperatorTok{());}
+
+            \ControlFlowTok{if} \OperatorTok{(!}\NormalTok{values}\OperatorTok{.}\FunctionTok{isEmpty}\OperatorTok{())} \OperatorTok{\{}
+                \FunctionTok{log}\OperatorTok{(}\NormalTok{values}\OperatorTok{);}
+            \OperatorTok{\}} \ControlFlowTok{else} \OperatorTok{\{}
+                \FunctionTok{log}\OperatorTok{(}\StringTok{"Buffer\#get: end reached, iter "} \OperatorTok{+}\NormalTok{ i}\OperatorTok{);}
+            \OperatorTok{\}}
+
+            \ControlFlowTok{return} \OperatorTok{!}\NormalTok{values}\OperatorTok{.}\FunctionTok{isEmpty}\OperatorTok{();}
+        \OperatorTok{\});}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{producer}{%
+\subsection{\texorpdfstring{\texttt{Producer}}{Producer}}\label{producer}}
+
+Implementacja konsumenta produkującego pewną liczbę elementów, losowaną
+za pomocą funkcji \texttt{WorkerThread\#getRandomizedM}, i następnie
+umieszczającego te elementy w buforze.
+
+Wartość generowanego elementu jest obliczana według następującego wzoru:
+
+\[ s = \lfloor tid \cdot 10^{\lfloor \log_{10}{iterCount} + 1 \rfloor} \rfloor \]
+\[ e_j = s + j + \sum_{k=-1}^{j - 1} m_k, \quad j \in [0, m), \enspace m_{-1} = 0 \]
+
+gdzie \(s\) - wartość początkowa, \(tid\) - thread id, \(e_j\) - wartość
+\(j\)-tego elementu, \(m_k\) jest obliczane za pomocą funkcji
+\texttt{WorkerThread\#getRandomizedM}.
+
+Obliczona w taki sposób wartość elementu umożliwi obserwowanie wartości
+pobieranych przez poszczególnych konsumentów. Takie podejście
+gwarantuje, iż wszystkie wyprodukowane przez producentów wartości będą
+unikalne, obliczone na podstawie id wątków, w których ci producenci
+zostali uruchomieni.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{stream}\OperatorTok{.}\ImportTok{IntStream}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Producer }\KeywordTok{extends}\NormalTok{ WorkerThread}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}} \OperatorTok{\{}
+
+    \KeywordTok{public} \FunctionTok{Producer}\OperatorTok{(}
+            \BuiltInTok{Buffer}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ buff}\OperatorTok{,}
+            \DataTypeTok{long}\NormalTok{ delayMinMs}\OperatorTok{,} \DataTypeTok{long}\NormalTok{ delayMaxMs}\OperatorTok{,}
+            \DataTypeTok{int}\NormalTok{ iterCount}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ m}
+    \OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{super}\OperatorTok{(}\NormalTok{buff}\OperatorTok{,}\NormalTok{ delayMinMs}\OperatorTok{,}\NormalTok{ delayMaxMs}\OperatorTok{,}\NormalTok{ iterCount}\OperatorTok{,}\NormalTok{ m}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \FunctionTok{Producer}\OperatorTok{(}\BuiltInTok{Buffer}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ buff}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{super}\OperatorTok{(}\NormalTok{buff}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \FunctionTok{log}\OperatorTok{(}\StringTok{"Producer started"}\OperatorTok{);}
+
+        \BuiltInTok{Box}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ counter }\OperatorTok{=}
+            \KeywordTok{new} \BuiltInTok{Box}\OperatorTok{\textless{}\textgreater{}((}\DataTypeTok{int}\OperatorTok{)} \OperatorTok{(}\FunctionTok{getId}\OperatorTok{()} \OperatorTok{*} \BuiltInTok{Math}\OperatorTok{.}\FunctionTok{pow}\OperatorTok{(}\DecValTok{10}\OperatorTok{,} \OperatorTok{(}\DataTypeTok{int}\OperatorTok{)} \BuiltInTok{Math}\OperatorTok{.}\FunctionTok{log10}\OperatorTok{(}\FunctionTok{getIterCount}\OperatorTok{())} \OperatorTok{+} \DecValTok{1}\OperatorTok{)));}
+
+        \FunctionTok{iterate}\OperatorTok{(}\NormalTok{i }\OperatorTok{{-}\textgreater{}} \OperatorTok{\{}
+            \DataTypeTok{int}\NormalTok{ counterVal }\OperatorTok{=}\NormalTok{ counter}\OperatorTok{.}\FunctionTok{getValue}\OperatorTok{();}
+            \DataTypeTok{int}\NormalTok{ m }\OperatorTok{=} \FunctionTok{getRandomizedM}\OperatorTok{();}
+
+            \DataTypeTok{var}\NormalTok{ elements }\OperatorTok{=}\NormalTok{ IntStream}\OperatorTok{.}\FunctionTok{range}\OperatorTok{(}\NormalTok{counterVal}\OperatorTok{,}\NormalTok{ counterVal }\OperatorTok{+}\NormalTok{ m}\OperatorTok{).}\FunctionTok{boxed}\OperatorTok{().}\FunctionTok{toList}\OperatorTok{();}
+
+\NormalTok{            counter}\OperatorTok{.}\FunctionTok{setValue}\OperatorTok{(}\NormalTok{counterVal }\OperatorTok{+}\NormalTok{ m}\OperatorTok{);}
+
+            \ControlFlowTok{if} \OperatorTok{(!}\NormalTok{buff}\OperatorTok{.}\FunctionTok{put}\OperatorTok{(}\NormalTok{elements}\OperatorTok{))} \OperatorTok{\{}
+                \FunctionTok{log}\OperatorTok{(}\StringTok{"Buffer\#put error, iter "} \OperatorTok{+}\NormalTok{ i}\OperatorTok{);}
+                \ControlFlowTok{return} \KeywordTok{false}\OperatorTok{;}
+            \OperatorTok{\}}
+
+            \ControlFlowTok{return} \KeywordTok{true}\OperatorTok{;}
+        \OperatorTok{\});}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{main}{%
+\subsection{\texorpdfstring{\texttt{Main}}{Main}}\label{main}}
+
+Klasa główna. Zawiera metody, umożliwiające korzystanie ze stworzonego
+mechanizmu.
+
+\begin{itemize}
+\item
+  Jeżeli do funkcji \texttt{main} żadne argumenty nie zostaną
+  przekazane, zostaną użyte domyślne parametry:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    \texttt{p\ =\ 10}
+  \item
+    \texttt{c\ =\ 10}
+  \item
+    \texttt{iterCount\ =\ 100}
+  \item
+    \texttt{bufferSize\ =\ 100}
+  \item
+    \texttt{bufferTimeout\ =\ 1000}
+  \item
+    \texttt{m\ =\ -1}
+  \item
+    Logger jest włączony
+  \end{enumerate}
+
+  gdzie \texttt{p} - liczba producentów, \texttt{c} - liczba
+  konsumentów. \texttt{iterCount} - liczba iteracji, \texttt{bufferSize}
+  - rozmiar bufora, \texttt{bufferTimeout} - maksymalny czas oczekiwania
+  na odczyt/zapis wartości z/do bufora, po przekroczeniu tego czasu
+  operacja zostanie przerwana, \texttt{m} - górny próg liczby elementów,
+  które zostaną wyprodukowane przez producenta (pobrane przez
+  konsumenta) w jednej iteracji, jeżeli \texttt{m\ ==\ -1}, to
+  \texttt{m\ =\ bufferSize\ /\ 2}
+\item
+  Jeżeli do funkcji \texttt{main} zostaną przekazane argumenty, to:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    \texttt{p\ =\ args{[}0{]}}
+  \item
+    \texttt{c\ =\ args{[}1{]}}
+  \item
+    \texttt{iterCount\ =\ args{[}2{]}}
+  \item
+    \texttt{bufferSize\ =\ args{[}3{]}}
+  \item
+    \texttt{bufferTimeout\ =\ args{[}4{]}}
+  \item
+    \texttt{m\ =\ args{[}5{]}}
+  \item
+    Jeżeli \texttt{args{[}6{]}} istnieje, to gdy ma wartość
+    \texttt{disable-output}, Logger zostanie wyciszony
+  \end{enumerate}
+\item
+  Niezaleznie od tego, czy Logger jest wyciszony czy nie, zostanie
+  wypisany czas wykonania w postaci \texttt{time=...}
+\end{itemize}
+
+Klasa \texttt{Main} jest zaimplementowana następująco:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Main.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab4}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{List}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{stream}\OperatorTok{.}\ImportTok{Stream}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Main }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{long}\NormalTok{ CONSUMER\_MIN\_DELAY }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{long}\NormalTok{ CONSUMER\_MAX\_DELAY }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{long}\NormalTok{ PRODUCER\_MIN\_DELAY }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{long}\NormalTok{ PRODUCER\_MAX\_DELAY }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \BuiltInTok{Logger}\NormalTok{ logger }\OperatorTok{=} \BuiltInTok{Logger}\OperatorTok{.}\FunctionTok{getInstance}\OperatorTok{();}
+
+    \CommentTok{/**}
+     \CommentTok{*}\NormalTok{ The application}\CommentTok{\textquotesingle{}}\NormalTok{s entry point}
+\CommentTok{     * @}\NormalTok{param args The arguments list}\CommentTok{:}\KeywordTok{\textless{}br\textgreater{}}
+     \CommentTok{*}\NormalTok{   args}\CommentTok{[0]:}\NormalTok{ The producer count}\KeywordTok{\textless{}br\textgreater{}}
+     \CommentTok{*}\NormalTok{   args}\CommentTok{[1]:}\NormalTok{ The consumer count}\KeywordTok{\textless{}br\textgreater{}}
+     \CommentTok{*}\NormalTok{   args}\CommentTok{[2]:}\NormalTok{ The iteration count }\CommentTok{(}\NormalTok{for both producers and consumers}\CommentTok{)}\KeywordTok{\textless{}br\textgreater{}}
+     \CommentTok{*}\NormalTok{   args}\CommentTok{[3]:}\NormalTok{ The buffer size}\KeywordTok{\textless{}br\textgreater{}}
+     \CommentTok{*}\NormalTok{   args}\CommentTok{[4]:}\NormalTok{ The buffer timeout}\CommentTok{,}\NormalTok{ in ms}\KeywordTok{\textless{}br\textgreater{}}
+     \CommentTok{*}\NormalTok{   args}\CommentTok{[5]:}\NormalTok{ The upper bound of produced}\CommentTok{/}\NormalTok{consumed element count}
+     \CommentTok{*}\NormalTok{            in one iteration}\CommentTok{.}\NormalTok{ If }\CommentTok{\textasciigrave{}{-}1\textasciigrave{},} \CommentTok{\textasciigrave{}}\NormalTok{buffer}\CommentTok{.}\NormalTok{capacity}\CommentTok{()} \CommentTok{/} \CommentTok{2\textasciigrave{}}\NormalTok{ will be used}\KeywordTok{\textless{}br\textgreater{}}
+     \CommentTok{*}\NormalTok{   args}\CommentTok{[6]:} \CommentTok{(}\NormalTok{optional}\CommentTok{)}\NormalTok{ Output params}\CommentTok{,}\NormalTok{ valid values}\CommentTok{:} \CommentTok{\textquotesingle{}}\NormalTok{disable}\CommentTok{{-}}\NormalTok{output}\CommentTok{\textquotesingle{}}
+     \CommentTok{*/}
+    \KeywordTok{public} \DataTypeTok{static} \DataTypeTok{void} \FunctionTok{main}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{[]}\NormalTok{ args}\OperatorTok{)} \KeywordTok{throws} \BuiltInTok{InterruptedException} \OperatorTok{\{}
+        \DataTypeTok{int}\NormalTok{ p }\OperatorTok{=} \DecValTok{10}\OperatorTok{;}
+        \DataTypeTok{int}\NormalTok{ c }\OperatorTok{=} \DecValTok{10}\OperatorTok{;}
+        \DataTypeTok{int}\NormalTok{ iterCount }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+        \DataTypeTok{int}\NormalTok{ bufferSize }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+        \DataTypeTok{int}\NormalTok{ bufferTimeout }\OperatorTok{=} \DecValTok{1000}\OperatorTok{;}
+        \DataTypeTok{int}\NormalTok{ m }\OperatorTok{=} \OperatorTok{{-}}\DecValTok{1}\OperatorTok{;}
+
+        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{args}\OperatorTok{.}\FunctionTok{length} \OperatorTok{\textgreater{}} \DecValTok{0}\OperatorTok{)} \OperatorTok{\{}
+            \ControlFlowTok{if} \OperatorTok{(}\NormalTok{args}\OperatorTok{.}\FunctionTok{length} \OperatorTok{!=} \DecValTok{6} \OperatorTok{\&\&}\NormalTok{ args}\OperatorTok{.}\FunctionTok{length} \OperatorTok{!=} \DecValTok{7}\OperatorTok{)} \OperatorTok{\{}
+                \ControlFlowTok{throw} \KeywordTok{new} \BuiltInTok{IllegalArgumentException}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}
+                    \StringTok{"Unexpected argument count: expected 0, 6 or 7, got }\SpecialCharTok{\%s}\StringTok{"}\OperatorTok{,}\NormalTok{ args}\OperatorTok{.}\FunctionTok{length}\OperatorTok{));}
+            \OperatorTok{\}}
+
+\NormalTok{            p }\OperatorTok{=} \BuiltInTok{Integer}\OperatorTok{.}\FunctionTok{parseInt}\OperatorTok{(}\NormalTok{args}\OperatorTok{[}\DecValTok{0}\OperatorTok{]);}
+\NormalTok{            c }\OperatorTok{=} \BuiltInTok{Integer}\OperatorTok{.}\FunctionTok{parseInt}\OperatorTok{(}\NormalTok{args}\OperatorTok{[}\DecValTok{1}\OperatorTok{]);}
+\NormalTok{            iterCount }\OperatorTok{=} \BuiltInTok{Integer}\OperatorTok{.}\FunctionTok{parseInt}\OperatorTok{(}\NormalTok{args}\OperatorTok{[}\DecValTok{2}\OperatorTok{]);}
+\NormalTok{            bufferSize }\OperatorTok{=} \BuiltInTok{Integer}\OperatorTok{.}\FunctionTok{parseInt}\OperatorTok{(}\NormalTok{args}\OperatorTok{[}\DecValTok{3}\OperatorTok{]);}
+\NormalTok{            bufferTimeout }\OperatorTok{=} \BuiltInTok{Integer}\OperatorTok{.}\FunctionTok{parseInt}\OperatorTok{(}\NormalTok{args}\OperatorTok{[}\DecValTok{4}\OperatorTok{]);}
+\NormalTok{            m }\OperatorTok{=} \BuiltInTok{Integer}\OperatorTok{.}\FunctionTok{parseInt}\OperatorTok{(}\NormalTok{args}\OperatorTok{[}\DecValTok{5}\OperatorTok{]);}
+
+            \ControlFlowTok{if} \OperatorTok{(}\NormalTok{args}\OperatorTok{.}\FunctionTok{length} \OperatorTok{==} \DecValTok{7}\OperatorTok{)} \OperatorTok{\{}
+                \ControlFlowTok{if} \OperatorTok{(}\NormalTok{args}\OperatorTok{[}\DecValTok{6}\OperatorTok{].}\FunctionTok{equals}\OperatorTok{(}\StringTok{"disable{-}output"}\OperatorTok{))} \OperatorTok{\{}
+\NormalTok{                    logger}\OperatorTok{.}\FunctionTok{mute}\OperatorTok{();}
+                \OperatorTok{\}} \ControlFlowTok{else} \OperatorTok{\{}
+                    \ControlFlowTok{throw} \KeywordTok{new} \BuiltInTok{IllegalArgumentException}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}
+                        \StringTok{"Illegal argument: \textquotesingle{}}\SpecialCharTok{\%s}\StringTok{\textquotesingle{}"}\OperatorTok{,}\NormalTok{ args}\OperatorTok{[}\DecValTok{6}\OperatorTok{]));}
+                \OperatorTok{\}}
+            \OperatorTok{\}}
+        \OperatorTok{\}}
+
+        \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{printf}\OperatorTok{(}\StringTok{"time=}\SpecialCharTok{\%s\textbackslash{}n}\StringTok{"}\OperatorTok{,}
+                \FunctionTok{demo}\OperatorTok{(}\NormalTok{p}\OperatorTok{,}\NormalTok{ c}\OperatorTok{,}\NormalTok{ iterCount}\OperatorTok{,}\NormalTok{ m}\OperatorTok{,} \KeywordTok{new}\NormalTok{ SemaphoreBuffer}\OperatorTok{\textless{}\textgreater{}(}\NormalTok{bufferSize}\OperatorTok{,}\NormalTok{ bufferTimeout}\OperatorTok{)));}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{long} \FunctionTok{demo}\OperatorTok{(}
+            \DataTypeTok{int}\NormalTok{ p}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ c}\OperatorTok{,}
+            \DataTypeTok{int}\NormalTok{ iterCount}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ m}\OperatorTok{,}
+            \BuiltInTok{Buffer}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ buffer}
+    \OperatorTok{)} \KeywordTok{throws} \BuiltInTok{InterruptedException} \OperatorTok{\{}
+\NormalTok{        logger}\OperatorTok{.}\FunctionTok{log}\OperatorTok{(}
+            \BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}\StringTok{"******* producers = }\SpecialCharTok{\%s}\StringTok{, consumers = }\SpecialCharTok{\%s}\StringTok{, buffer: }\SpecialCharTok{\%s}\StringTok{ *******}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\OperatorTok{,}
+\NormalTok{                p}\OperatorTok{,}\NormalTok{ c}\OperatorTok{,}\NormalTok{ buffer}\OperatorTok{.}\FunctionTok{getClass}\OperatorTok{().}\FunctionTok{getSimpleName}\OperatorTok{()));}
+
+        \DataTypeTok{int}\NormalTok{ validM }\OperatorTok{=}\NormalTok{ m }\OperatorTok{==} \OperatorTok{{-}}\DecValTok{1} \OperatorTok{?}\NormalTok{ buffer}\OperatorTok{.}\FunctionTok{capacity}\OperatorTok{()} \OperatorTok{/} \DecValTok{2} \OperatorTok{:}\NormalTok{ m}\OperatorTok{;}
+
+        \DataTypeTok{var}\NormalTok{ consumers }\OperatorTok{=}\NormalTok{ Stream}\OperatorTok{.}\FunctionTok{generate}\OperatorTok{(()} \OperatorTok{{-}\textgreater{}} \FunctionTok{mkConsumer}\OperatorTok{(}\NormalTok{buffer}\OperatorTok{,}\NormalTok{ iterCount}\OperatorTok{,}\NormalTok{ validM}\OperatorTok{))}
+                \OperatorTok{.}\FunctionTok{limit}\OperatorTok{(}\NormalTok{c}\OperatorTok{)}
+                \OperatorTok{.}\FunctionTok{toList}\OperatorTok{();}
+
+        \DataTypeTok{var}\NormalTok{ producers }\OperatorTok{=}\NormalTok{ Stream}\OperatorTok{.}\FunctionTok{generate}\OperatorTok{(()} \OperatorTok{{-}\textgreater{}} \FunctionTok{mkProducer}\OperatorTok{(}\NormalTok{buffer}\OperatorTok{,}\NormalTok{ iterCount}\OperatorTok{,}\NormalTok{ validM}\OperatorTok{))}
+                \OperatorTok{.}\FunctionTok{limit}\OperatorTok{(}\NormalTok{p}\OperatorTok{)}
+                \OperatorTok{.}\FunctionTok{toList}\OperatorTok{();}
+
+        \DataTypeTok{long}\NormalTok{ startTime }\OperatorTok{=} \BuiltInTok{System}\OperatorTok{.}\FunctionTok{currentTimeMillis}\OperatorTok{();}
+
+\NormalTok{        consumers}\OperatorTok{.}\FunctionTok{forEach}\OperatorTok{(}\BuiltInTok{Thread}\OperatorTok{::}\NormalTok{start}\OperatorTok{);}
+\NormalTok{        producers}\OperatorTok{.}\FunctionTok{forEach}\OperatorTok{(}\BuiltInTok{Thread}\OperatorTok{::}\NormalTok{start}\OperatorTok{);}
+
+        \FunctionTok{joinAll}\OperatorTok{(}\NormalTok{producers}\OperatorTok{);}
+        \FunctionTok{joinAll}\OperatorTok{(}\NormalTok{consumers}\OperatorTok{);}
+
+        \DataTypeTok{long}\NormalTok{ elapsedTime }\OperatorTok{=} \BuiltInTok{System}\OperatorTok{.}\FunctionTok{currentTimeMillis}\OperatorTok{()} \OperatorTok{{-}}\NormalTok{ startTime}\OperatorTok{;}
+
+\NormalTok{        logger}\OperatorTok{.}\FunctionTok{log}\OperatorTok{(}\StringTok{"Done in "} \OperatorTok{+}\NormalTok{ elapsedTime }\OperatorTok{+} \StringTok{" ms"}\OperatorTok{);}
+
+        \ControlFlowTok{return}\NormalTok{ elapsedTime}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \DataTypeTok{static}\NormalTok{ Consumer }\FunctionTok{mkConsumer}\OperatorTok{(}\BuiltInTok{Buffer}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ buffer}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ iterCount}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ m}\OperatorTok{)} \OperatorTok{\{}
+        \ControlFlowTok{return} \KeywordTok{new} \FunctionTok{Consumer}\OperatorTok{(}\NormalTok{buffer}\OperatorTok{,}\NormalTok{ CONSUMER\_MIN\_DELAY}\OperatorTok{,}\NormalTok{ CONSUMER\_MAX\_DELAY}\OperatorTok{,}\NormalTok{ iterCount}\OperatorTok{,}\NormalTok{ m}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \DataTypeTok{static}\NormalTok{ Producer }\FunctionTok{mkProducer}\OperatorTok{(}\BuiltInTok{Buffer}\OperatorTok{\textless{}}\BuiltInTok{Integer}\OperatorTok{\textgreater{}}\NormalTok{ buffer}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ iterCount}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ m}\OperatorTok{)} \OperatorTok{\{}
+        \ControlFlowTok{return} \KeywordTok{new} \FunctionTok{Producer}\OperatorTok{(}\NormalTok{buffer}\OperatorTok{,}\NormalTok{ PRODUCER\_MIN\_DELAY}\OperatorTok{,}\NormalTok{ PRODUCER\_MAX\_DELAY}\OperatorTok{,}\NormalTok{ iterCount}\OperatorTok{,}\NormalTok{ m}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{void} \FunctionTok{joinAll}\OperatorTok{(}\BuiltInTok{List}\OperatorTok{\textless{}?} \KeywordTok{extends} \BuiltInTok{Thread}\OperatorTok{\textgreater{}}\NormalTok{ threads}\OperatorTok{)} \KeywordTok{throws} \BuiltInTok{InterruptedException} \OperatorTok{\{}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{var}\NormalTok{ thread }\OperatorTok{:}\NormalTok{ threads}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{            thread}\OperatorTok{.}\FunctionTok{join}\OperatorTok{();}
+        \OperatorTok{\}}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Uwaga: wyniki można znaleźć w odpowiednim rozdziale.
+\end{quote}
+
+\begin{quote}
+To zadanie może zostać uruchomione korzystając z polecenia
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{./gradlew}\NormalTok{ run}
+\end{Highlighting}
+\end{Shaded}
+\end{quote}
+
+    \hypertarget{wyniki}{%
+\section{Wyniki}\label{wyniki}}
+
+W tym rozdziale zostały umieszczone wyniki (pomiary wydajności)
+powyższego rozwiązania.
+
+Podczas testowania został użyty następujący sprzęt i oprogramowanie:
+
+\begin{itemize}
+\tightlist
+\item
+  16 × AMD Ryzen 7 4800H with Radeon Graphics
+\item
+  Fedora 38, Linux 6.5.6-200.fc38.x86\_64
+\item
+  openjdk 17.0.8 2023-07-18
+\end{itemize}
+
+Dodatkowo, w celach otrzymania i przetwarzania wyników został użyty
+język \texttt{python\ 3.11.6}, biblioteka \texttt{matplotlib\ 3.8.0},
+służąca do rysowania wykresów, oraz \texttt{numpy\ 1.24.3}, służąca do
+obliczeń numerycznych.
+
+Ponadto, żeby ułatwić proces uruchomienia projektu, skorzystano z
+narzędzia \texttt{gradle} (Kotlin DSL).
+
+    \hypertarget{pobieranie-wynikuxf3w}{%
+\subsection{Pobieranie wyników}\label{pobieranie-wynikuxf3w}}
+
+W tej części zostaną pobrane wyniki dla następujących przypadków:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Stała liczba producentów, zmienna liczba konsumentów
+\item
+  Zmienna liczba producentów, stała liczba konsumentów
+\item
+  Ta sama liczba producentów i konsumentów, zmienna liczba iteracji
+\item
+  Stały rozmiar bufora, zmienna liczba jednocześnie pobieranych /
+  wstawianych elementów
+\end{enumerate}
+
+W tym celu najpierw warto stworzyć liste testowanych parametrów:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{ParamSet}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{name}\PY{p}{:} \PY{n+nb}{str}\PY{p}{,} \PY{n}{x\PYZus{}name}\PY{p}{:} \PY{n+nb}{str}\PY{p}{,} \PY{n}{x\PYZus{}values}\PY{p}{,} \PY{n}{template}\PY{p}{:} \PY{n+nb}{dict}\PY{p}{[}\PY{n+nb}{str}\PY{p}{,} \PY{n+nb}{int}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{k+kc}{None}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{name}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{x\PYZus{}name} \PY{o}{=} \PY{n}{x\PYZus{}name}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{values} \PY{o}{=} \PY{p}{[}
+            \PY{p}{\PYZob{}}\PY{n}{x\PYZus{}name}\PY{p}{:} \PY{n}{val}\PY{p}{\PYZcb{}} \PY{o}{|} \PY{n}{template}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+            \PY{k}{for} \PY{n}{val} \PY{o+ow}{in} \PY{n}{x\PYZus{}values}
+        \PY{p}{]}
+    
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}str\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{str}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb}{str}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n+nv+vm}{\PYZus{}\PYZus{}dict\PYZus{}\PYZus{}}\PY{p}{)}
+    
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}repr\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{str}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n+nf+fm}{\PYZus{}\PYZus{}str\PYZus{}\PYZus{}}\PY{p}{(}\PY{p}{)}
+
+
+\PY{n}{params} \PY{o}{=} \PY{p}{[}
+    \PY{c+c1}{\PYZsh{} param set 1}
+    \PY{n}{ParamSet}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable consumer count}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{c}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{p}{[}\PY{n+nb}{int}\PY{p}{(}\PY{n}{i}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{1.5}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{60}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{]}\PY{p}{,} \PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{p}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{25}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{iterCount}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{100}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferSize}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{1000}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferTimeout}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{500}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{m}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+    \PY{p}{\PYZcb{}}\PY{p}{)}\PY{p}{,}
+
+    \PY{c+c1}{\PYZsh{} param set 2}
+    \PY{n}{ParamSet}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable producer count}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{p}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{p}{[}\PY{n+nb}{int}\PY{p}{(}\PY{n}{i}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{1.5}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{60}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{]}\PY{p}{,} \PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{c}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{25}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{iterCount}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{100}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferSize}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{1000}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferTimeout}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{500}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{m}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+    \PY{p}{\PYZcb{}}\PY{p}{)}\PY{p}{,}
+
+    \PY{c+c1}{\PYZsh{} param set 3}
+    \PY{n}{ParamSet}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable iteration count}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{iterCount}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{201}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,} \PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{p}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{10}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{c}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{10}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferSize}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{100}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferTimeout}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{1000}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{m}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+    \PY{p}{\PYZcb{}}\PY{p}{)}\PY{p}{,}
+
+    \PY{c+c1}{\PYZsh{} param set 4}
+    \PY{n}{ParamSet}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable upper bound of produced/consumed element count}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{m}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{500}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{,} \PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{p}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{10}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{c}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{10}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{iterCount}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{100}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferSize}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{1000}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bufferTimeout}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{500}\PY{p}{,}
+    \PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Następnie tworzę funkcję, która będzie wywoływać program Javowy z
+określonymi parametrami i jako wynik zwracać czas wykonania obliczeń
+wypisany przez Javowy program:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{subprocess}
+\PY{k+kn}{import} \PY{n+nn}{re}
+
+\PY{k}{def} \PY{n+nf}{run}\PY{p}{(}\PY{n}{p}\PY{p}{:} \PY{n+nb}{dict}\PY{p}{[}\PY{n+nb}{str}\PY{p}{,} \PY{n+nb}{int}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{int}\PY{p}{:}
+    \PY{n}{cmd} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../tw\PYZhy{}lab4/gradlew run \PYZhy{}\PYZhy{}args=}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ disable\PYZhy{}output}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}
+        \PY{n}{p}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{p}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{p}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterCount}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{p}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bufferSize}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{p}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bufferTimeout}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{p}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{m}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{p}{)}
+
+    \PY{n}{result} \PY{o}{=} \PY{n}{subprocess}\PY{o}{.}\PY{n}{run}\PY{p}{(}
+        \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bash}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}c}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{cmd}\PY{p}{]}\PY{p}{,}
+        \PY{n}{cwd}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../tw\PYZhy{}lab4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{n}{stdout}\PY{o}{=}\PY{n}{subprocess}\PY{o}{.}\PY{n}{PIPE}\PY{p}{)}
+    
+    \PY{k}{return} \PY{n+nb}{int}\PY{p}{(}\PY{n}{re}\PY{o}{.}\PY{n}{search}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{time=([0\PYZhy{}9]+)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{result}\PY{o}{.}\PY{n}{stdout}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{group}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Tworzę funkcję, która dla podanych argumentów zwraca średni czas
+wykonania:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{k}{def} \PY{n+nf}{run\PYZus{}mean}\PY{p}{(}\PY{n}{p}\PY{p}{:} \PY{n+nb}{dict}\PY{p}{[}\PY{n+nb}{str}\PY{p}{,} \PY{n+nb}{int}\PY{p}{]}\PY{p}{,} \PY{n}{n}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{float}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{[}\PY{n}{run}\PY{p}{(}\PY{n}{p}\PY{p}{)} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{]}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n+nb}{float}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Następnie tworzę funkcję, która dla podanego \texttt{ParamSet} zwraca
+listę średnich czasów wykonania:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{get\PYZus{}times\PYZus{}for}\PY{p}{(}\PY{n}{pset}\PY{p}{:} \PY{n}{ParamSet}\PY{p}{,} \PY{n}{debug}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{float}\PY{p}{]}\PY{p}{:}
+    \PY{k}{if} \PY{n}{debug}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Processing ParamSet with x\PYZus{}name=}\PY{l+s+si}{\PYZob{}}\PY{n}{pset}\PY{o}{.}\PY{n}{x\PYZus{}name}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{k}{return} \PY{p}{[}\PY{n}{run\PYZus{}mean}\PY{p}{(}\PY{n}{p}\PY{p}{)} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n}{pset}\PY{o}{.}\PY{n}{values}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Wreszcie, tworzę listę wyników dla poszczególnych param setów:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{store} \PYZhy{}r times
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{try}\PY{p}{:}
+    \PY{n}{times}
+\PY{k}{except} \PY{n+ne}{NameError}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{times}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ variable doesn}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{t exist, performing calculations from scratch}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{times} \PY{o}{=} \PY{p}{[}\PY{n}{get\PYZus{}times\PYZus{}for}\PY{p}{(}\PY{n}{pset}\PY{p}{)} \PY{k}{for} \PY{n}{pset} \PY{o+ow}{in} \PY{n}{params}\PY{p}{]}
+\PY{k}{else}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{times}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ variable exists \PYZhy{} no calculations will be performed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+'times' variable exists - no calculations will be performed
+    \end{Verbatim}
+
+    Uwaga: powyższe obliczenia trwały ponad 73 minuty.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{store} times
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Stored 'times' (list)
+    \end{Verbatim}
+
+    Mamy listę parametrów \texttt{params} oraz listę pomiarów
+\texttt{times}, a więc możemy przejść do następnej części - wykresów.
+
+    \hypertarget{wykresy}{%
+\subsection{Wykresy}\label{wykresy}}
+
+W celu rysowania wykresów, tworzę pomocnicze funkcje:
+
+\begin{itemize}
+\item
+  \texttt{show\_plot}, która zajmie się rysowaniem wykresów w oparciu o
+  \texttt{ParamSet} oraz odpowiednią listę pomiarów
+\item
+  \texttt{regression\_fit\_degree}, służącą do dopasowania stopnia
+  wielomianu interpolującego do danych. Aby uniknąć overfittingu,
+  korzystam z następującej funkcji kosztu:
+
+  \[ cost = \sum_{j=1}^{n} \left(y_j - \widehat{y}_j\right)^2 + 0.25 \cdot i^2 \]
+
+  gdzie \(i\) - indeks iteracji, \(n\) - liczba punktów
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+
+\PY{k}{def} \PY{n+nf}{regression\PYZus{}fit\PYZus{}degree}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} cost, degree}
+    \PY{n}{min\PYZus{}cost\PYZus{}info} \PY{o}{=} \PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{inf}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{min}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{p} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{poly1d}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{polyfit}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{i}\PY{p}{)}\PY{p}{)}
+
+        \PY{n}{cost} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{y} \PY{o}{\PYZhy{}} \PY{n}{p}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{l+m+mf}{0.25} \PY{o}{*} \PY{n}{i}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+
+        \PY{k}{if} \PY{n}{cost} \PY{o}{\PYZlt{}} \PY{n}{min\PYZus{}cost\PYZus{}info}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+            \PY{n}{min\PYZus{}cost\PYZus{}info} \PY{o}{=} \PY{p}{(}\PY{n}{cost}\PY{p}{,} \PY{n}{i}\PY{p}{)}
+    
+    \PY{k}{return} \PY{n}{min\PYZus{}cost\PYZus{}info}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+
+\PY{k}{def} \PY{n+nf}{show\PYZus{}plot}\PY{p}{(}\PY{n}{pset}\PY{p}{:} \PY{n}{ParamSet}\PY{p}{,} \PY{n}{results}\PY{p}{:} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{float}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+    \PY{n}{constants} \PY{o}{=} \PY{n}{pset}\PY{o}{.}\PY{n}{values}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+    \PY{k}{del} \PY{n}{constants}\PY{p}{[}\PY{n}{pset}\PY{o}{.}\PY{n}{x\PYZus{}name}\PY{p}{]}
+
+    \PY{n}{x} \PY{o}{=} \PY{p}{[}\PY{n}{v}\PY{p}{[}\PY{n}{pset}\PY{o}{.}\PY{n}{x\PYZus{}name}\PY{p}{]} \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{pset}\PY{o}{.}\PY{n}{values}\PY{p}{]}
+    \PY{n}{y} \PY{o}{=} \PY{n}{results}
+
+    \PY{n}{t} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
+    \PY{n}{reg\PYZus{}deg} \PY{o}{=} \PY{n}{regression\PYZus{}fit\PYZus{}degree}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{figure.figsize}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{p}{(}\PY{l+m+mf}{6.4} \PY{o}{*} \PY{l+m+mf}{0.8}\PY{p}{,} \PY{l+m+mf}{4.8} \PY{o}{*} \PY{l+m+mf}{0.8}\PY{p}{)}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{o}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Data (mean time)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{poly1d}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{polyfit}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{reg\PYZus{}deg}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}\PYZhy{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Fitted polynomial of degree }\PY{l+s+si}{\PYZob{}}\PY{n}{reg\PYZus{}deg}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{loc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{best}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{pset}\PY{o}{.}\PY{n}{name}\PY{l+s+si}{\PYZcb{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+si}{\PYZob{}}\PY{n}{constants}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{n}{pset}\PY{o}{.}\PY{n}{x\PYZus{}name}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{time, \PYZdl{}[ms]\PYZdl{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Rysuję wszystkie wykresy:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{params}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{show\PYZus{}plot}\PY{p}{(}\PY{n}{params}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{times}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_29_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_29_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_29_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_29_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{wnioski}{%
+\section{Wnioski}\label{wnioski}}
+
+\begin{itemize}
+\item
+  Problem producentów-konsumentów (producer-consumer problem,
+  bounded-buffer problem) da się rozwiązać korzystając z różnych
+  mechanizmów synchronizacji, m.in. semaforów i monitorów
+\item
+  Czas wykonania zależy od wszystkich parametrów, i im większe te
+  parametry, tym większy jest czas wykonania
+\item
+  Czas wykonania całego \emph{eksperymentu} wyniósł ponad 73 minuty, co
+  jest zdecydowanie za dużo. Ten czas można zredukować na kilka
+  sposobów, między innymi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Skorzystać z mechanizmu wielowątkowości i każdy \texttt{ParamSet}
+    obliczać w osobnym wątku (ale wątków tych nie może być więcej od
+    sprzętowej liczby wątków)
+  \item
+    Większa część czasu wykonania \emph{eksperymentu} to czas potrzebny
+    na uruchomienie narzędzia \texttt{gradle}. A więc w celu
+    przyspieszenia można zrezygnować z tego narzędzia i uruchamiać
+    projekt ręcznie
+  \end{itemize}
+\item
+  Jak widać z wykresów, wyniki oscylują wokół wielomianu
+  interpolującego, nie są one bardzo dokładne. Wynika to z pewnych
+  mechanizmów, użytych w implementacji, a mianowicie z mechanizmu
+  \emph{timeout}. ten mechanizm został wprowadzony w laboratorium 3 i w
+  skrócie można go opisać następująco (opis klas \texttt{Consumer} oraz
+  \texttt{Producer} z laboratorium 3):
+
+  \begin{quote}
+  {[}\ldots{]} niepowodzenie może wystąpić jeżeli żaden producent nie
+  zapisał do bufora jakiejś wartości w ciągu określonego czasu. Wtedy
+  konsument stwierdza, że ``transmisja'' jest zakończona i kończy swoje
+  działanie. Ten mechanizm jest niezbędny dla niektórych przypadków, np.
+  gdy liczba konsumentów jest większa od liczby producentów: w celu
+  uniknięcia zawieszenia programu z powodu oczekiwania nowych danych
+  nadanych przez producenta, musimy skorzystać z wyżej opisanego
+  mechanizmu
+
+  {[}\ldots{]} Niepowodzenie może zostać spowodowane tym, że już żaden
+  konsument nie próbuje odczytać wartości z buforu. Ten mechanizm został
+  zaimplementowany z przyczyn opisanych podczas omówienia konsumenta,
+  tylko tym razem liczba producentów może być większa od liczby
+  konsumentów
+  \end{quote}
+
+  i biorąc pod uwagę to, iż do opisanych powyżej sytuacji w przypadku
+  wstawiania / odczytywania losowej liczby elementów w sposób oczywisty
+  dochodzimy dość często, mamy dodatkowy narzut czasowy, który może
+  wynieść aż do \texttt{bufferTimeout} millisekund.
+
+  Ten problem może zostać rozwiązany zastępując obecne podejście innym,
+  a mianowicie musimy śledzić liczbę aktywnych producentów i konsumentów
+  i na tej podstawie podejmować decyzje o przerwaniu czekania. Jest to
+  bardziej zaawansowany mechanizm wymagający zaimplementowania
+  dodatkowych klas, np. \texttt{ConsumerPool}, \texttt{ProducerPool}
+  itd.
+\end{itemize}
+
+    \hypertarget{bibliografia}{%
+\section{Bibliografia}\label{bibliografia}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{https://home.agh.edu.pl/~funika/tw/lab4/}{Materiały do
+  laboratorium 4}
+\item
+  \href{https://home.agh.edu.pl/~funika/tw/lab3/}{Materiały do
+  laboratorium 3}
+\item
+  \href{https://pl.wikipedia.org/wiki/Problem_producenta_i_konsumenta}{Wikipedia
+  - Problem producenta i konsumenta}
+\item
+  \href{https://en.wikipedia.org/wiki/Producer\%E2\%80\%93consumer_problem}{Wikipedia
+  - Producer-consumer problem}
+\end{enumerate}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

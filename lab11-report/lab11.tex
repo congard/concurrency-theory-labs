@@ -1,0 +1,1011 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{lab11}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \begin{titlepage}
+        \begin{center}
+            \vspace*{1cm}
+    
+            \textbf{Laboratorium 11}
+    
+            \vspace{0.5cm}
+            Teoria śladów\\
+            Część II
+                
+            \vspace{1.5cm}
+    
+            \textbf{Danylo Knapp}
+
+            \vfill
+
+            \includegraphics[width=0.4\textwidth]{../report-templates/agh-logo.png}
+    
+            \vfill
+                
+            Teoria Współbieżności
+                
+            \vspace{0.8cm}
+
+            Wydział Informatyki\\
+            Akademia Górniczo-Hutnicza\\
+            im. Stanisława Staszica w Krakowie\\
+            17.12.23
+                
+        \end{center}
+    \end{titlepage}
+    
+    \hypertarget{treux15bux107-zadania}{%
+\section{Treść zadania}\label{treux15bux107-zadania}}
+
+Dane są:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Alfabet \(A\), w którym każda litera oznacza akcję.
+\item
+  Relacja niezależności \(I\), oznaczająca które akcje są niezależne
+  (przemienne, tzn. można je wykonać w dowolnej kolejności i nie zmienia
+  to wyniku końcowego).
+\item
+  Słowo \(w\) oznaczające przykładowe wykonanie sekwencji akcji.
+\end{enumerate}
+
+\hypertarget{zadanie}{%
+\subsection{Zadanie}\label{zadanie}}
+
+Napisz program w dowolnym języku, który:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Wyznacza relację zależności \(D\)
+\item
+  Wyznacza ślad \([w]\) względem relacji \(I\)
+\item
+  Wyznacza postać normalną Foaty \(FNF([w])\) śladu \([w]\)
+\item
+  Wyznacza graf zależności dla słowa \(w\)
+\end{enumerate}
+
+    \hypertarget{wstux119p}{%
+\section{Wstęp}\label{wstux119p}}
+
+Wstęp teoretyczny, m.in opisy wykorzystanych algorytmów, można znaleźć w
+sprawozdaniu z laboratorium 10.
+
+    \hypertarget{rozwiux105zanie}{%
+\section{Rozwiązanie}\label{rozwiux105zanie}}
+
+W celu rozwiązania tego zadania zostanie użyty język Python 3.11.6.
+Również została wykorzystana biblioteka \texttt{pandas\ 2.1.3} w celu
+wypisywania niektórych wyników w postaci tabeli. Opis poszczególnych
+funkcji tego rozwiązania znajduje się poniżej.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{typing} \PY{k+kn}{import} \PY{n}{Iterable}\PY{p}{,} \PY{n}{Sequence}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+
+\PY{n}{MARKER} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{*}\PY{l+s+s1}{\PYZsq{}}
+
+\PY{n}{RelationIt} \PY{o}{=} \PY{n}{Iterable}\PY{p}{[}\PY{n+nb}{tuple}\PY{p}{[}\PY{n+nb}{str}\PY{p}{,} \PY{n+nb}{str}\PY{p}{]}\PY{p}{]}
+
+\PY{n}{Stack} \PY{o}{=} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}
+\PY{n}{MultiStack} \PY{o}{=} \PY{n+nb}{dict}\PY{p}{[}\PY{n+nb}{str}\PY{p}{,} \PY{n}{Stack}\PY{p}{]}
+\PY{n}{Graph} \PY{o}{=} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{int}\PY{p}{]}\PY{p}{]}
+
+
+\PY{k}{def} \PY{n+nf}{stack\PYZus{}empty}\PY{p}{(}\PY{n}{A}\PY{p}{:} \PY{n}{Iterable}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{MultiStack}\PY{p}{:}
+    \PY{k}{return} \PY{n+nb}{dict}\PY{p}{(}\PY{p}{[}\PY{p}{(}\PY{n}{c}\PY{p}{,} \PY{p}{[}\PY{p}{]}\PY{p}{)} \PY{k}{for} \PY{n}{c} \PY{o+ow}{in} \PY{n}{A}\PY{p}{]}\PY{p}{)}
+
+
+\PY{k}{def} \PY{n+nf}{stack\PYZus{}print}\PY{p}{(}\PY{n}{s}\PY{p}{:} \PY{n}{MultiStack}\PY{p}{)}\PY{p}{:}
+    \PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{o}{.}\PY{n}{from\PYZus{}dict}\PY{p}{(}\PY{n}{s}\PY{p}{,} \PY{n}{orient}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}
+    \PY{n}{df}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{n}{to\PYZus{}replace}\PY{o}{=}\PY{p}{[}\PY{k+kc}{None}\PY{p}{]}\PY{p}{,} \PY{n}{value}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{df}\PY{p}{)}
+
+
+\PY{k}{def} \PY{n+nf}{stack\PYZus{}init}\PY{p}{(}
+        \PY{n}{word}\PY{p}{:} \PY{n}{Iterable}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]} \PY{o}{|} \PY{n+nb}{str}\PY{p}{,}
+        \PY{n}{A}\PY{p}{:} \PY{n}{Iterable}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{,}
+        \PY{n}{D}\PY{p}{:} \PY{n}{RelationIt}\PY{p}{,}
+        \PY{n}{verbose}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{MultiStack}\PY{p}{:}
+
+    \PY{c+c1}{\PYZsh{} construct stack}
+    \PY{n}{stack} \PY{o}{=} \PY{n}{stack\PYZus{}empty}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} fill stack}
+    \PY{k}{for} \PY{n}{curr\PYZus{}action} \PY{o+ow}{in} \PY{n+nb}{reversed}\PY{p}{(}\PY{n}{word}\PY{p}{)}\PY{p}{:}
+        \PY{n}{stack}\PY{p}{[}\PY{n}{curr\PYZus{}action}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{curr\PYZus{}action}\PY{p}{)}
+
+        \PY{k}{for} \PY{n}{action} \PY{o+ow}{in} \PY{n}{A}\PY{p}{:}
+            \PY{k}{if} \PY{n}{action} \PY{o}{==} \PY{n}{curr\PYZus{}action}\PY{p}{:}
+                \PY{k}{continue}
+
+            \PY{k}{if} \PY{p}{(}\PY{n}{curr\PYZus{}action}\PY{p}{,} \PY{n}{action}\PY{p}{)} \PY{o+ow}{in} \PY{n}{D}\PY{p}{:}
+                \PY{c+c1}{\PYZsh{} dependent, non commutative}
+                \PY{n}{stack}\PY{p}{[}\PY{n}{action}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{MARKER}\PY{p}{)}
+            
+            \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+                \PY{n}{stack\PYZus{}print}\PY{p}{(}\PY{n}{stack}\PY{p}{)}
+                \PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{stack}
+
+
+\PY{k}{def} \PY{n+nf}{stack\PYZus{}is\PYZus{}empty}\PY{p}{(}\PY{n}{s}\PY{p}{:} \PY{n}{MultiStack}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{bool}\PY{p}{:}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n}{s}\PY{p}{:}
+        \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{s}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{:}
+            \PY{k}{return} \PY{k+kc}{False}
+    \PY{k}{return} \PY{k+kc}{True}
+
+
+\PY{k}{def} \PY{n+nf}{stack\PYZus{}top}\PY{p}{(}\PY{n}{stack}\PY{p}{:} \PY{n}{MultiStack}\PY{p}{,} \PY{n}{pop}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{:}
+    \PY{n}{top} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+    \PY{k}{for} \PY{n}{action} \PY{o+ow}{in} \PY{n}{stack}\PY{p}{:}
+        \PY{n}{s} \PY{o}{=} \PY{n}{stack}\PY{p}{[}\PY{n}{action}\PY{p}{]}
+
+        \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{s}\PY{p}{)} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{s}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{!=} \PY{n}{MARKER}\PY{p}{:}
+            \PY{n}{top}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{s}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{pop} \PY{k}{else} \PY{n}{s}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{top}
+
+
+\PY{k}{def} \PY{n+nf}{stack\PYZus{}remove\PYZus{}markers}\PY{p}{(}
+        \PY{n}{stack}\PY{p}{:} \PY{n}{MultiStack}\PY{p}{,}
+        \PY{n}{D}\PY{p}{:} \PY{n}{RelationIt}\PY{p}{,}
+        \PY{n}{top}\PY{p}{:} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{:}
+    
+    \PY{n}{popped} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    
+    \PY{k}{for} \PY{n}{action} \PY{o+ow}{in} \PY{n}{stack}\PY{p}{:}
+        \PY{k}{for} \PY{n}{top\PYZus{}action} \PY{o+ow}{in} \PY{n}{top}\PY{p}{:}
+            \PY{k}{if} \PY{n}{action} \PY{o}{==} \PY{n}{top\PYZus{}action}\PY{p}{:}
+                \PY{k}{continue}
+
+            \PY{k}{if} \PY{p}{(}\PY{n}{top\PYZus{}action}\PY{p}{,} \PY{n}{action}\PY{p}{)} \PY{o+ow}{in} \PY{n}{D}\PY{p}{:}
+                \PY{n}{s} \PY{o}{=} \PY{n}{stack}\PY{p}{[}\PY{n}{action}\PY{p}{]}
+
+                \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{s}\PY{p}{)} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0} \PY{o+ow}{and} \PY{n}{s}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{==} \PY{n}{MARKER}\PY{p}{:}
+                    \PY{n}{s}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{p}{)}  \PY{c+c1}{\PYZsh{} pop marker}
+                    \PY{n}{popped}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{action}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{popped}
+
+
+\PY{k}{def} \PY{n+nf}{stack\PYZus{}copy}\PY{p}{(}\PY{n}{stack}\PY{p}{:} \PY{n}{MultiStack}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{MultiStack}\PY{p}{:}
+    \PY{k}{return} \PY{n}{MultiStack}\PY{p}{(}\PY{p}{[}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{stack}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}\PY{p}{)} \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n}{stack}\PY{p}{]}\PY{p}{)}
+
+
+\PY{k}{def} \PY{n+nf}{graph\PYZus{}path\PYZus{}exists}\PY{p}{(}\PY{n}{graph}\PY{p}{:} \PY{n}{Graph}\PY{p}{,} \PY{n}{src}\PY{p}{:} \PY{n+nb}{int}\PY{p}{,} \PY{n}{dst}\PY{p}{:} \PY{n+nb}{int}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{bool}\PY{p}{:}
+    \PY{k}{class} \PY{n+nc}{VertexInfo}\PY{p}{:}
+        \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{vtime}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{ptime}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{parent}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{k+kc}{None}\PY{p}{)}\PY{p}{:}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{vtime} \PY{o}{=} \PY{n}{vtime}  \PY{c+c1}{\PYZsh{} visited time}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{ptime} \PY{o}{=} \PY{n}{ptime}  \PY{c+c1}{\PYZsh{} processed time}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{parent} \PY{o}{=} \PY{n}{parent}
+
+        \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}str\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{[vtime=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, ptime=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{, parent=}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{]}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{vtime}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{ptime}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{parent}\PY{p}{)}
+
+        \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}repr\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n+nf+fm}{\PYZus{}\PYZus{}str\PYZus{}\PYZus{}}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{dfs}\PY{p}{(}\PY{n}{g}\PY{p}{:} \PY{n}{Graph}\PY{p}{,} \PY{n}{start}\PY{p}{:} \PY{n+nb}{int}\PY{p}{)}\PY{p}{:}
+        \PY{n}{n} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{g}\PY{p}{)}
+        \PY{n}{info} \PY{o}{=} \PY{p}{[}\PY{n}{VertexInfo}\PY{p}{(}\PY{p}{)} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{]}
+        \PY{n}{time} \PY{o}{=} \PY{l+m+mi}{0}
+
+        \PY{k}{def} \PY{n+nf}{visit}\PY{p}{(}\PY{n}{u}\PY{p}{:} \PY{n+nb}{int}\PY{p}{)}\PY{p}{:}
+            \PY{k}{nonlocal} \PY{n}{time}
+            \PY{n}{time} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+
+            \PY{n}{info}\PY{p}{[}\PY{n}{u}\PY{p}{]}\PY{o}{.}\PY{n}{vtime} \PY{o}{=} \PY{n}{time}  \PY{c+c1}{\PYZsh{} wierzchołek został odwiedzony / czas odwiedzenia}
+
+            \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{g}\PY{p}{[}\PY{n}{u}\PY{p}{]}\PY{p}{:}
+                \PY{k}{if} \PY{n}{info}\PY{p}{[}\PY{n}{v}\PY{p}{]}\PY{o}{.}\PY{n}{vtime} \PY{o}{==} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{:}
+                    \PY{n}{info}\PY{p}{[}\PY{n}{v}\PY{p}{]}\PY{o}{.}\PY{n}{parent} \PY{o}{=} \PY{n}{u}
+                    \PY{n}{visit}\PY{p}{(}\PY{n}{v}\PY{p}{)}
+
+            \PY{n}{time} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+
+            \PY{n}{info}\PY{p}{[}\PY{n}{u}\PY{p}{]}\PY{o}{.}\PY{n}{ptime} \PY{o}{=} \PY{n}{time}  \PY{c+c1}{\PYZsh{} wierzchołek został przetworzony / czas przetworzenia}
+
+        \PY{n}{visit}\PY{p}{(}\PY{n}{start}\PY{p}{)}
+
+        \PY{k}{return} \PY{n}{info}
+
+    \PY{n}{inf} \PY{o}{=} \PY{n}{dfs}\PY{p}{(}\PY{n}{graph}\PY{p}{,} \PY{n}{src}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{inf}\PY{p}{[}\PY{n}{dst}\PY{p}{]}\PY{o}{.}\PY{n}{vtime} \PY{o}{!=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+
+
+\PY{k}{def} \PY{n+nf}{graph\PYZus{}add\PYZus{}edge}\PY{p}{(}\PY{n}{graph}\PY{p}{:} \PY{n}{Graph}\PY{p}{,} \PY{n}{src}\PY{p}{:} \PY{n+nb}{int}\PY{p}{,} \PY{n}{dst}\PY{p}{:} \PY{n+nb}{int}\PY{p}{)}\PY{p}{:}
+    \PY{n}{graph}\PY{p}{[}\PY{n}{src}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{dst}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{} Foata Normal Form}
+\PY{k}{def} \PY{n+nf}{fnf}\PY{p}{(}
+        \PY{n}{stack}\PY{p}{:} \PY{n}{MultiStack}\PY{p}{,}
+        \PY{n}{D}\PY{p}{:} \PY{n}{RelationIt}\PY{p}{,}
+        \PY{n}{verbose}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{]}\PY{p}{:}
+    
+    \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=== FNF ===}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} To get the Foata normal form we take within a loop the set formed by}
+    \PY{c+c1}{\PYZsh{} letters being on the top of stacks; arranging the letters in the lexicographic}
+    \PY{c+c1}{\PYZsh{} order yields a step. As previously we pop the corresponding markers. Again}
+    \PY{c+c1}{\PYZsh{} this loop is repeated until all stacks are empty.}
+    
+    \PY{n}{stack\PYZus{}fnf} \PY{o}{=} \PY{n}{stack\PYZus{}copy}\PY{p}{(}\PY{n}{stack}\PY{p}{)}
+
+    \PY{n}{fnf}\PY{p}{:} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+    \PY{k}{while} \PY{o+ow}{not} \PY{n}{stack\PYZus{}is\PYZus{}empty}\PY{p}{(}\PY{n}{stack\PYZus{}fnf}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+            \PY{n}{stack\PYZus{}print}\PY{p}{(}\PY{n}{stack\PYZus{}fnf}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} step 1: construct top}
+        \PY{n}{top} \PY{o}{=} \PY{n}{stack\PYZus{}top}\PY{p}{(}\PY{n}{stack\PYZus{}fnf}\PY{p}{,} \PY{n}{pop}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} step 2: remove markers for non\PYZhy{}commutative actions}
+        \PY{n}{removed} \PY{o}{=} \PY{n}{stack\PYZus{}remove\PYZus{}markers}\PY{p}{(}\PY{n}{stack\PYZus{}fnf}\PY{p}{,} \PY{n}{D}\PY{p}{,} \PY{n}{top}\PY{p}{)}
+
+        \PY{n}{fnf}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{sorted}\PY{p}{(}\PY{n}{top}\PY{p}{)}\PY{p}{)}
+
+        \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Popped top:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{top}\PY{p}{)}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Removed markers:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{removed}\PY{p}{)}
+            \PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{fnf}
+
+
+\PY{c+c1}{\PYZsh{} Lexicographic Normal Form}
+\PY{k}{def} \PY{n+nf}{lnf}\PY{p}{(}
+        \PY{n}{stack}\PY{p}{:} \PY{n}{MultiStack}\PY{p}{,}
+        \PY{n}{D}\PY{p}{:} \PY{n}{RelationIt}\PY{p}{,}
+        \PY{n}{verbose}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{:}
+    
+    \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=== LNF ===}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} To get the lexicographic normal form: it suffices to take among the letters}
+    \PY{c+c1}{\PYZsh{} being on the top of some stack that letter a being minimal with respect}
+    \PY{c+c1}{\PYZsh{} to the given lexicographic ordering. We pop a marker on each stack corre\PYZhy{}}
+    \PY{c+c1}{\PYZsh{} sponding to a letter b (b != a) which does not commute with a. We repeat}
+    \PY{c+c1}{\PYZsh{} this loop until all stacks are empty.}
+
+    \PY{n}{stack\PYZus{}norm} \PY{o}{=} \PY{n}{stack\PYZus{}copy}\PY{p}{(}\PY{n}{stack}\PY{p}{)}
+
+    \PY{n}{norm}\PY{p}{:} \PY{n+nb}{list}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+    \PY{k}{while} \PY{o+ow}{not} \PY{n}{stack\PYZus{}is\PYZus{}empty}\PY{p}{(}\PY{n}{stack\PYZus{}norm}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+            \PY{n}{stack\PYZus{}print}\PY{p}{(}\PY{n}{stack\PYZus{}norm}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} step 1: construct top}
+        \PY{n}{top} \PY{o}{=} \PY{n}{stack\PYZus{}top}\PY{p}{(}\PY{n}{stack\PYZus{}norm}\PY{p}{,} \PY{n}{pop}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} step 2: select minimal action and pop it}
+        \PY{n}{min\PYZus{}action} \PY{o}{=} \PY{n+nb}{min}\PY{p}{(}\PY{n}{top}\PY{p}{)}
+        \PY{n}{stack\PYZus{}norm}\PY{p}{[}\PY{n}{min\PYZus{}action}\PY{p}{]}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} step 3: remove markers for non\PYZhy{}commutative actions}
+        \PY{n}{removed} \PY{o}{=} \PY{n}{stack\PYZus{}remove\PYZus{}markers}\PY{p}{(}\PY{n}{stack\PYZus{}norm}\PY{p}{,} \PY{n}{D}\PY{p}{,} \PY{p}{[}\PY{n}{min\PYZus{}action}\PY{p}{]}\PY{p}{)}
+
+        \PY{n}{norm}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{min\PYZus{}action}\PY{p}{)}
+
+        \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Popped action:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{min\PYZus{}action}\PY{p}{)}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Removed markers:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{removed}\PY{p}{)}
+            \PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{norm}
+
+
+\PY{k}{def} \PY{n+nf}{build\PYZus{}dot\PYZus{}graph}\PY{p}{(}
+        \PY{n}{word}\PY{p}{:} \PY{n}{Sequence}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]} \PY{o}{|} \PY{n+nb}{str}\PY{p}{,}
+        \PY{n}{D}\PY{p}{:} \PY{n}{RelationIt}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{str}\PY{p}{:}
+    
+    \PY{n}{n} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{word}\PY{p}{)}
+    \PY{n}{graph}\PY{p}{:} \PY{n}{Graph} \PY{o}{=} \PY{p}{[}\PY{p}{[}\PY{p}{]} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{]}
+    
+    \PY{k}{for} \PY{n}{dst} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{n}\PY{p}{)}\PY{p}{:}
+        \PY{n}{d\PYZus{}label} \PY{o}{=} \PY{n}{word}\PY{p}{[}\PY{n}{dst}\PY{p}{]}
+
+        \PY{k}{for} \PY{n}{src} \PY{o+ow}{in} \PY{n+nb}{reversed}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{n}{dst}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+            \PY{n}{s\PYZus{}label} \PY{o}{=} \PY{n}{word}\PY{p}{[}\PY{n}{src}\PY{p}{]}
+
+            \PY{k}{if} \PY{p}{(}\PY{n}{d\PYZus{}label}\PY{p}{,} \PY{n}{s\PYZus{}label}\PY{p}{)} \PY{o+ow}{in} \PY{n}{D} \PY{o+ow}{and} \PY{o+ow}{not} \PY{n}{graph\PYZus{}path\PYZus{}exists}\PY{p}{(}\PY{n}{graph}\PY{p}{,} \PY{n}{src}\PY{p}{,} \PY{n}{dst}\PY{p}{)}\PY{p}{:}
+                \PY{n}{graph\PYZus{}add\PYZus{}edge}\PY{p}{(}\PY{n}{graph}\PY{p}{,} \PY{n}{src}\PY{p}{,} \PY{n}{dst}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} generate dot graph}
+    \PY{n}{dot} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}
+
+    \PY{k}{for} \PY{n}{parent}\PY{p}{,} \PY{n}{children} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{graph}\PY{p}{)}\PY{p}{:}
+        \PY{k}{for} \PY{n}{child} \PY{o+ow}{in} \PY{n}{children}\PY{p}{:}
+            \PY{n}{dot} \PY{o}{+}\PY{o}{=} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}t}\PY{l+s+si}{\PYZob{}}\PY{n}{parent}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ \PYZhy{}\PYZgt{} }\PY{l+s+si}{\PYZob{}}\PY{n}{child}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}
+
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+        \PY{n}{dot} \PY{o}{+}\PY{o}{=} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}t}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{[label=}\PY{l+s+si}{\PYZob{}}\PY{n}{word}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{]}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}
+
+    \PY{k}{return} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{digraph g }\PY{l+s+se}{\PYZob{}\PYZob{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+si}{\PYZob{}}\PY{n}{dot}\PY{l+s+si}{\PYZcb{}}\PY{l+s+se}{\PYZcb{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}
+
+
+\PY{k}{def} \PY{n+nf}{print\PYZus{}summary}\PY{p}{(}
+        \PY{n}{A}\PY{p}{:} \PY{n}{Iterable}\PY{p}{[}\PY{n+nb}{str}\PY{p}{]}\PY{p}{,}
+        \PY{n}{I}\PY{p}{:} \PY{n}{RelationIt}\PY{p}{,} 
+        \PY{n}{w}\PY{p}{:} \PY{n+nb}{str}\PY{p}{,}
+        \PY{n}{verbose}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{k+kc}{None}\PY{p}{:}
+    
+    \PY{c+c1}{\PYZsh{} construct D set}
+    \PY{n}{D}\PY{p}{:} \PY{n+nb}{set}\PY{p}{[}\PY{n+nb}{tuple}\PY{p}{[}\PY{n+nb}{str}\PY{p}{,} \PY{n+nb}{str}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{for} \PY{n}{p1} \PY{o+ow}{in} \PY{n}{A}\PY{p}{:}
+        \PY{k}{for} \PY{n}{p2} \PY{o+ow}{in} \PY{n}{A}\PY{p}{:}
+            \PY{n}{pair} \PY{o}{=} \PY{p}{(}\PY{n}{p1}\PY{p}{,} \PY{n}{p2}\PY{p}{)}
+
+            \PY{k}{if} \PY{n}{pair} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{I}\PY{p}{:}
+                \PY{n}{D}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{pair}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} print D}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{D = }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{sorted}\PY{p}{(}\PY{n}{D}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{n}{stack} \PY{o}{=} \PY{n}{stack\PYZus{}init}\PY{p}{(}\PY{n}{w}\PY{p}{,} \PY{n}{A}\PY{p}{,} \PY{n}{D}\PY{p}{,} \PY{n}{verbose}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} calc FNF}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{FNF = }\PY{l+s+si}{\PYZob{}}\PY{n}{fnf}\PY{p}{(}\PY{n}{stack}\PY{p}{,}\PY{+w}{ }\PY{n}{D}\PY{p}{,}\PY{+w}{ }\PY{n}{verbose}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} calc lexicographic normal form}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{LNF = }\PY{l+s+si}{\PYZob{}}\PY{n}{lnf}\PY{p}{(}\PY{n}{stack}\PY{p}{,}\PY{+w}{ }\PY{n}{D}\PY{p}{,}\PY{+w}{ }\PY{n}{verbose}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{build\PYZus{}dot\PYZus{}graph}\PY{p}{(}\PY{n}{w}\PY{p}{,} \PY{n}{D}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Testowanie dla przykładowych danych testowych:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{print\PYZus{}summary}\PY{p}{(}
+    \PY{n}{A}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{I}\PY{o}{=}\PY{p}{\PYZob{}}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{n}{w}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{badacb}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+D = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'b'), ('b', 'd'),
+('c', 'a'), ('c', 'c'), ('c', 'd'), ('d', 'b'), ('d', 'c'), ('d', 'd')]
+FNF = [['b'], ['a', 'd'], ['a'], ['b', 'c']]
+LNF = ['b', 'a', 'a', 'd', 'b', 'c']
+digraph g \{
+        1 -> 2
+        1 -> 3
+        2 -> 4
+        3 -> 5
+        3 -> 6
+        4 -> 5
+        4 -> 6
+        1[label=b]
+        2[label=a]
+        3[label=d]
+        4[label=a]
+        5[label=c]
+        6[label=b]
+\}
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{print\PYZus{}summary}\PY{p}{(}
+    \PY{n}{A}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{e}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{I}\PY{o}{=}\PY{p}{\PYZob{}}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{e}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{e}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{n}{w}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{acdcfbbe}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+D = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('a', 'e'), ('a', 'f'), ('b', 'a'),
+('b', 'b'), ('b', 'c'), ('b', 'd'), ('b', 'f'), ('c', 'a'), ('c', 'b'), ('c',
+'c'), ('c', 'e'), ('d', 'b'), ('d', 'd'), ('d', 'e'), ('d', 'f'), ('e', 'a'),
+('e', 'c'), ('e', 'd'), ('e', 'e'), ('e', 'f'), ('f', 'a'), ('f', 'b'), ('f',
+'d'), ('f', 'e'), ('f', 'f')]
+FNF = [['a', 'd'], ['c', 'f'], ['c'], ['b', 'e'], ['b']]
+LNF = ['a', 'c', 'c', 'd', 'f', 'b', 'b', 'e']
+digraph g \{
+        1 -> 2
+        1 -> 5
+        2 -> 4
+        3 -> 5
+        4 -> 6
+        4 -> 8
+        5 -> 6
+        5 -> 8
+        6 -> 7
+        1[label=a]
+        2[label=c]
+        3[label=d]
+        4[label=c]
+        5[label=f]
+        6[label=b]
+        7[label=b]
+        8[label=e]
+\}
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{print\PYZus{}summary}\PY{p}{(}
+    \PY{n}{A}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{I}\PY{o}{=}\PY{p}{\PYZob{}}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{n}{w}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{abababbca}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+D = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'b'), ('c', 'a'),
+('c', 'c')]
+FNF = [['a'], ['b'], ['a'], ['b'], ['a'], ['b', 'c'], ['b'], ['a']]
+LNF = ['a', 'b', 'a', 'b', 'a', 'b', 'b', 'c', 'a']
+digraph g \{
+        1 -> 2
+        2 -> 3
+        3 -> 4
+        4 -> 5
+        5 -> 6
+        5 -> 8
+        6 -> 7
+        7 -> 9
+        8 -> 9
+        1[label=a]
+        2[label=b]
+        3[label=a]
+        4[label=b]
+        5[label=a]
+        6[label=b]
+        7[label=b]
+        8[label=c]
+        9[label=a]
+\}
+    \end{Verbatim}
+
+    \hypertarget{opis-rozwiux105zania}{%
+\subsection{Opis rozwiązania}\label{opis-rozwiux105zania}}
+
+\begin{itemize}
+\item
+  Funkcje służące do zarządzania stosem
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{stack\_empty} tworzy pusty zbiór stosów dla podanego
+    alfabetu \texttt{A}
+  \item
+    \texttt{stack\_print} wypisuje podany zbiór stosów \texttt{s}
+  \item
+    \texttt{stack\_init} tworzy zbiór stosów dla danego słowa
+    \texttt{word}, alfabetu \texttt{A} oraz relacji zależności
+    \texttt{D}
+  \item
+    \texttt{stack\_is\_empty} sprawdza, czy zbiór stosów jest pusty.
+    Zbiór stosów jest pusty wtedy i tylko wtedy, gdy wszystkie stosy w
+    nim zawarte są puste
+  \item
+    \texttt{stack\_top} zwraca elementy z wierzchu stosów podanego
+    zbioru stosów \texttt{stack}. Jeżeli \texttt{pop} jest ustawione na
+    \texttt{True}, usuwa te elementy ze stosów
+  \item
+    \texttt{stack\_remove\_markers} usuwa markery ze stosów, które są
+    zależne od elementów listy \texttt{top} względem relacji zależności
+    \texttt{D}
+  \item
+    \texttt{stack\_copy} tworzy tzw. deep copy podanego zbioru stosów
+    \texttt{stack}
+  \end{itemize}
+\item
+  Funkcje służące do zarządzania grafem
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{graph\_path\_exists} zwraca \texttt{True}, jeżeli w grafie
+    \texttt{graph} istnieje ścieżka między wierzchołkiem o indeksie
+    \texttt{src} a \texttt{dst}
+    (\(src \rightarrow ... \rightarrow dst\))
+  \item
+    \texttt{graph\_add\_edge} dodaje krawędź skierowaną w grafie
+    \texttt{graph} między wierzchołkiem o indeksie \texttt{src} a
+    \texttt{dst} (\(src \rightarrow dst\))
+  \end{itemize}
+\item
+  Funkcje służące do wyznaczania postaci normalnych
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{fnf} służy do wyznaczania postaci normalnej Foaty (FNF)
+  \item
+    \texttt{lnf} służy do wyznaczania leksykograficznej postaci
+    normalnej (LNF)
+  \end{itemize}
+\item
+  Funkcja \texttt{build\_dot\_graph} służy do tworzenia grafu zależności
+  Diekerta w formacie DOT. Do sprawdzenia czy istnieje ścieżka między
+  danymi wierzchołkami, został uzyty algorytm DFS
+\item
+  Funkcja \texttt{print\_summary} służy do wypisywania wszystkich
+  informacji dt. słowa \texttt{w} nad alfabetem \texttt{A} względem
+  relacji niezależności \texttt{I}. Funkcja ta wypisze następujące
+  informacje:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Relację zależności \(D\)
+  \item
+    Postać normalną Foaty \(FNF\)
+  \item
+    Leksykograficzną postać normalną \(LNF\)
+  \item
+    Graf w formacie DOT
+  \end{itemize}
+\end{itemize}
+
+    \hypertarget{wnioski}{%
+\section{Wnioski}\label{wnioski}}
+
+Oprócz wniosków z laboratorium 10, można dodać następujące dodatkowe
+wnioski:
+
+\begin{itemize}
+\item
+  \textbf{Relacja zależności} \(D\) jest dopełnieniem relacji
+  niezależności \(I\), tzn. \(D = A × A ∖ I\), \(D = \bar{I}\). Oznacza
+  to, że dwie akcje są zależne, jeśli nie są niezależne.
+\item
+  \textbf{Graf zależności dla słowa} \(w\) jest grafem skierowanym, w
+  którym wierzchołki są akcjami z \(w\), a krawędzie są relacją
+  zależności \(D\). Oznacza to, że istnieje krawędź z \(a\) do \(b\),
+  jeśli \(a\) i \(b\) są zależne i \(a\) występuje przed \(b\) w słowie
+  \(w\).
+\item
+  \textbf{Algorytm DFS} (ang. Depth First Search) służy do przechodzenia
+  lub przeszukiwania drzewa lub grafu. Został użyty w celu sprawdzenia,
+  czy istnieje ścieżka między poszczególnymi wierzchołkami.
+\item
+  \textbf{DOT} jest językiem opisu grafów, opracowanym w ramach projektu
+  Graphviz. Służy do definiowania wierzchołków, krawędzi, grafów,
+  podgrafów i klastrów za pomocą prostych reguł składniowych.
+\end{itemize}
+
+    \hypertarget{bibliografia}{%
+\section{Bibliografia}\label{bibliografia}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Materiały do laboratorium 10, dr inż. Włodzimierz Funika:\\
+  \url{https://home.agh.edu.pl/~funika/tw/lab-trace/}
+\item
+  Materiały do laboratorium 11, dr inż. Włodzimierz Funika:\\
+  \url{https://home.agh.edu.pl/~funika/tw/lab-trace2/}
+\item
+  Trace Theory, Volker Diekert, Anca Muscholl:\\
+  \url{http://www2.informatik.uni-stuttgart.de/fmi/ti/veroeffentlichungen/pdffiles/DiekertMuscholl2011.pdf}
+\item
+  Partial Commutation and Traces, Volker Diekert, Yves Métivier:\\
+  \url{https://www.researchgate.net/publication/280851316_Partial_Commutation_and_Traces}
+\item
+  A Foata Normal Form And Its Application For The Purpose Of
+  Accel­erating Computations By A Multi-GPU, Ahmet A. Husainov:\\
+  \url{https://www.researchgate.net/publication/283389280_A_FOATA_NORMAL_FORM_AND_ITS_APPLICATION_FOR_THE_PURPOSE_OF_ACCEL-ERATING_COMPUTATIONS_BY_A_MULTI-GPU}
+\item
+  Depth-first search, Wikipedia:\\
+  \url{https://en.wikipedia.org/wiki/Depth-first_search}
+\item
+  DOT (graph description language), Wikipedia:\\
+  \url{https://en.wikipedia.org/wiki/DOT_(graph_description_language)}
+\end{enumerate}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

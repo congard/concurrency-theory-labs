@@ -1,0 +1,18 @@
+{
+  "name": "tw-lab9",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "hello_world": "node hello_world.js",
+    "node1": "node tasks/node1.js",
+    "node1a": "node tasks/node1a.js",
+    "node1b": "node tasks/node1b.js",
+    "node1c": "node tasks/node1c.js",
+    "node1d": "node tasks/node1d.js",
+    "node2t": "node tasks/node2t.js"
+  },
+  "dependencies": {
+    "async": "^3.2.5"
+  }
+}

@@ -1,0 +1,1709 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{lab13}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \begin{titlepage}
+        \begin{center}
+            \vspace*{1cm}
+    
+            \textbf{Laboratorium 13}
+    
+            \vspace{0.5cm}
+            Communicating Sequential Processes (CSP)
+                
+            \vspace{1.5cm}
+    
+            \textbf{Danylo Knapp}
+
+            \vfill
+
+            \includegraphics[width=0.4\textwidth]{../report-templates/agh-logo.png}
+    
+            \vfill
+                
+            Teoria Współbieżności
+                
+            \vspace{0.8cm}
+
+            Wydział Informatyki\\
+            Akademia Górniczo-Hutnicza\\
+            im. Stanisława Staszica w Krakowie\\
+            14.01.24
+                
+        \end{center}
+    \end{titlepage}
+    
+    
+
+    
+    \hypertarget{treux15bux107-zadania}{%
+\section{Treść zadania}\label{treux15bux107-zadania}}
+
+    \hypertarget{cel-ux107wiczenia}{%
+\subsection{Cel ćwiczenia}\label{cel-ux107wiczenia}}
+
+Celem niniejszego ćwiczenia jest zapoznanie się z koncepcją CSP oraz
+wykonanie rozwiązania problemu ograniczonego bufora z użyciem
+oprogramowania realizującego koncepcję CSP.
+
+    \hypertarget{wprowadzenie-teoretyczne}{%
+\subsection{Wprowadzenie teoretyczne}\label{wprowadzenie-teoretyczne}}
+
+Teoria komunikujących się sekwencyjnych procesów (CSP) C.A.R. Hoare'a
+dostarcza formalne podejście do opisu współbieżności i zbiór technik
+projektowania współbieżnych programów. W założeniu procesy współbieżne
+nie mają wspólnej przestrzeni adresowej. Proces CSP może być traktowany
+jako szczególny rodzaj obiektu typu aktor, w którym:
+
+\begin{itemize}
+\item
+  procesy nie mają interfejsu metod ani metod, które można wywołać z
+  zewnątrz. Metod zatem nie można wywoływać z wątków. Tak więc nie ma
+  potrzeby jawnego blokowania;
+\item
+  procesy komunikują tylko za pomocą czytania i zapisywania danych
+  poprzez kanały;
+\item
+  procesy nie mają tożsamości, a więc do nich nie można jawnie się od-
+  woływać. Jednakże kanały umożliwiają komunikację z dowolnym procesem
+  na drugim końcu kanału;
+\item
+  procesy nie muszą pracować w pętli w nieskończoność odbierając
+  komunikaty. Mogą pisać i czytać komunikaty na różnych kanałach, jeśli
+  zachodzi taka potrzeba.
+\end{itemize}
+
+Kanał CSP może być rozumiany jako szczególny rodzaj kanału, przy czym:
+
+\begin{itemize}
+\item
+  kanały są synchroniczne, a więc nie wspierają wewnętrznego
+  buforowania. Można jednak zbudować procesy, które realizują
+  buforowanie;
+\item
+  kanały obsługują tylko odczyt (''?'') i zapis (''!'') jako operacje
+  przenoszące dane;
+\item
+  podstawowym typem kanałów jest \emph{one-to-one}. Mogą łączyć tylko
+  jedną parę procesów, pisarza i czytelnika. Można również zdefiniować
+  kanały do odczytu i do zapisu z/do wielu procesów.
+\end{itemize}
+
+    \hypertarget{plan-ux107wiczenia}{%
+\subsection{Plan ćwiczenia}\label{plan-ux107wiczenia}}
+
+Pakiet JCSP, opracowany na University of Kent, to platforma wykonawcza
+dla programów współbieżnych w Javie, która wspiera konstrukcje CSP
+reprezentowane przez interfejsy, klasy i metody, w tym:
+
+\begin{itemize}
+\item
+  interfejsy \texttt{ChannelInput} (wsparcie dla odczytu),
+  \texttt{ChannelOutput} (wsparcie dla zapisu) i \texttt{Channel}
+  (obsługuje obydwie czynności) działają na argumentach typu
+  \texttt{Object}, ale specjalne wersje przewidziane są też dla
+  argumentów typu \texttt{int}. Główna klasa to \texttt{One2OneChannel},
+  która wspiera obsługę jednego czytelnika i jednego pisarza.
+\item
+  interfejs \texttt{CSProcess} opisuje procesy wspierając tylko metodę
+  \texttt{run}. Klasy \texttt{Parallel} and \texttt{Sequence} (i inne)
+  mają konstruktory, które przyjmują tablice innych obiektów
+  \texttt{CSProcess} i tworzą złożone obiekty (kompozyty).
+\item
+  operator wyboru \texttt{{[}{]}} jest obsługiwany za pośrednictwem
+  klasy \texttt{Alternative}. Konstruktor przyjmuje tablice z elementami
+  typu \texttt{Guard}. \texttt{Alternative} wspiera metodę
+  \texttt{select}, zwraca ona indeks wskazujący, który z nich może (i
+  powinien) być wybrany. Metoda \texttt{fairSelect} działa w ten sam
+  sposób, ale zapewnia dodatkowe gwarancje sprawiedliwości - wybiera
+  sprawiedliwie spośród wszystkich gotowych alternatyw.
+\item
+  dodatkowe środki programistyczne w JCSP to \emph{timer} (który
+  wykonuje odłożone zapisy i może być również używany do określenia
+  time-out'u w \texttt{Alternative}), \texttt{Generate} (generuje
+  sekwencje liczb), \texttt{Skip} (która nic nie robi - jedna z prymityw
+  CSP), i klasy, które umożliwiają interakcję poprzez GUI.
+\end{itemize}
+
+    \hypertarget{zadania}{%
+\subsection{Zadania}\label{zadania}}
+
+\hypertarget{zadanie-1}{%
+\subsubsection{Zadanie 1}\label{zadanie-1}}
+
+Proszę przeanalizować przykładowe rozwiązanie klasycznej postaci
+problemu producentów i konsumentów, zapisane z użyciem JCSP.
+
+\hypertarget{zadanie-2}{%
+\subsubsection{Zadanie 2}\label{zadanie-2}}
+
+Zaimplementuj w Javie z użyciem JCSP rozwiązanie problemu producenta i
+konsumenta z buforem N-elementowym tak, aby każdy element bufora był
+reprezentowany przez odrębny proces (taki wariant ma praktyczne
+uzasadnienie w sytuacji, gdy pamięć lokalna procesora wykonującego
+proces bufora jest na tyle mała, że mieści tylko jedną porcję).
+
+Uwzględnij dwie możliwości:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  kolejność umieszczania wyprodukowanych elementów w buforze oraz
+  kolejność pobierania nie mają znaczenia
+\item
+  pobieranie elementów powinno odbywać się w takiej kolejności, w jakiej
+  były umieszczane w buforze
+\end{enumerate}
+
+Proszę wykonać pomiary wydajności kodu dla obu przypadków.
+
+    \hypertarget{rozwiux105zania}{%
+\section{Rozwiązania}\label{rozwiux105zania}}
+
+Struktura projektu wygląda następująco:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{!}tree\PY{+w}{ }/mnt/data/Studia/5s/TW/labs/tw\PYZhy{}lab13/src/main/java/pl/edu/agh/tw/knapp/lab13\PY{+w}{ }\PYZhy{}L\PY{+w}{ }\PY{l+m}{2}\PY{+w}{ }\PYZhy{}n
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/mnt/data/Studia/5s/TW/labs/tw-lab13/src/main/java/pl/edu/agh/tw/knapp/lab13
+    task1
+        Consumer.java
+        Producer.java
+        Task1Main.java
+    task1f
+        Buffer.java
+        Consumer.java
+        Producer.java
+        Task1fMain.java
+    task2
+        Buffer.java
+        CSPConsumer.java
+        CSPProducer.java
+        Logger.java
+        Portion.java
+        Task2aMain.java
+        Task2bMain.java
+        Timer.java
+
+4 directories, 15 files
+    \end{Verbatim}
+
+    Biblioteka JCSP została dołączona do projektu korzystając z narzędzia
+Gradle w sposób następujący:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// build.gradle.kts}
+
+\NormalTok{dependencies }\OperatorTok{\{}
+    \CommentTok{// [...]}
+
+    \CommentTok{// https://mvnrepository.com/artifact/org.codehaus.jcsp/jcsp}
+\NormalTok{    implementation}\OperatorTok{(}\StringTok{"org.codehaus.jcsp:jcsp:1.1{-}rc5"}\OperatorTok{)}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{zadanie-1}{%
+\subsection{Zadanie 1}\label{zadanie-1}}
+
+    \hypertarget{wersja-podstawowa}{%
+\subsubsection{Wersja podstawowa}\label{wersja-podstawowa}}
+
+Wersja podstawowa wygląda w sposób następujący:
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Consumer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task1}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{ChannelInputInt}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Consumer }\KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ ChannelInputInt channel}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{Consumer}\OperatorTok{(}\NormalTok{ChannelInputInt in}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        channel }\OperatorTok{=}\NormalTok{ in}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \DataTypeTok{int}\NormalTok{ item }\OperatorTok{=}\NormalTok{ channel}\OperatorTok{.}\FunctionTok{read}\OperatorTok{();}
+        \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{println}\OperatorTok{(}\NormalTok{item}\OperatorTok{);}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Producer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task1}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{ChannelOutputInt}\OperatorTok{;}
+
+\KeywordTok{class}\NormalTok{ Producer }\KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ ChannelOutputInt channel}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{Producer}\OperatorTok{(}\NormalTok{ChannelOutputInt out}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        channel }\OperatorTok{=}\NormalTok{ out}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \DataTypeTok{int}\NormalTok{ item }\OperatorTok{=} \OperatorTok{(}\DataTypeTok{int}\OperatorTok{)(}\BuiltInTok{Math}\OperatorTok{.}\FunctionTok{random}\OperatorTok{()} \OperatorTok{*} \DecValTok{100}\OperatorTok{)} \OperatorTok{+} \DecValTok{1}\OperatorTok{;}
+\NormalTok{        channel}\OperatorTok{.}\FunctionTok{write}\OperatorTok{(}\NormalTok{item}\OperatorTok{);}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Task1Main.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task1}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{Channel}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{One2OneChannelInt}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{Parallel}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Task1Main }\OperatorTok{\{}
+    \KeywordTok{public} \DataTypeTok{static} \DataTypeTok{void} \FunctionTok{main}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{[]}\NormalTok{ args}\OperatorTok{)} \OperatorTok{\{}
+        \CommentTok{// Create channel object}
+\NormalTok{        One2OneChannelInt channel }\OperatorTok{=} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneInt}\OperatorTok{();}
+
+        \CommentTok{// Create and run with a list of parallel constructs}
+\NormalTok{        CSProcess}\OperatorTok{[]}\NormalTok{ procList }\OperatorTok{=} \OperatorTok{\{}
+            \KeywordTok{new} \FunctionTok{Producer}\OperatorTok{(}\NormalTok{channel}\OperatorTok{.}\FunctionTok{out}\OperatorTok{()),}
+            \KeywordTok{new} \FunctionTok{Consumer}\OperatorTok{(}\NormalTok{channel}\OperatorTok{.}\FunctionTok{in}\OperatorTok{())}
+        \OperatorTok{\};}
+
+        \CommentTok{// Processes}
+\NormalTok{        Parallel par }\OperatorTok{=} \KeywordTok{new} \FunctionTok{Parallel}\OperatorTok{(}\NormalTok{procList}\OperatorTok{);} \CommentTok{// PAR construct}
+\NormalTok{        par}\OperatorTok{.}\FunctionTok{run}\OperatorTok{();} \CommentTok{// Execute processes in parallel}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    Jak widać, jest to dość prosta wersja problemu producenta-konsumenta, w
+której zarówno producent jak i konsument mają wspólny kanał
+\texttt{channel}, do którego producent zapisuje, a konsument z kolei
+odczytuje.
+
+    \hypertarget{wersja-peux142na}{%
+\subsubsection{Wersja pełna}\label{wersja-peux142na}}
+
+Wersja pełna została stworzona przez George Wells
+\href{mailto:G.Wells@ru.ac.za}{\nolinkurl{G.Wells@ru.ac.za}} i oprócz
+producenta i konsumenta zawiera również pośrednika - bufor o określonym
+rozmiarze.
+
+\textbf{Uwaga}: kod został zmodyfikowany, bo oryginalna implementacja
+korzysta ze starszej wersji biblioteki JCSP.
+
+Implementacja jest przedstawiona poniżej.
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Consumer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task1f}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{ChannelInputInt}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{ChannelOutputInt}\OperatorTok{;}
+
+\CommentTok{/**}
+ \CommentTok{*}\NormalTok{ Consumer class}\CommentTok{:}\NormalTok{ reads integers from input channel}\CommentTok{,}\NormalTok{ displays them}\CommentTok{,}
+ \CommentTok{*}\NormalTok{ then terminates when a negative value is read}\CommentTok{.}
+ \CommentTok{*/}
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Consumer }\KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ ChannelInputInt in}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ ChannelOutputInt req}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{Consumer}\OperatorTok{(}\NormalTok{ChannelOutputInt req}\OperatorTok{,}\NormalTok{ ChannelInputInt in}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{req} \OperatorTok{=}\NormalTok{ req}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{in} \OperatorTok{=}\NormalTok{ in}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{while} \OperatorTok{(}\KeywordTok{true}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{            req}\OperatorTok{.}\FunctionTok{write}\OperatorTok{(}\DecValTok{0}\OperatorTok{);}
+
+            \DataTypeTok{int}\NormalTok{ item }\OperatorTok{=}\NormalTok{ in}\OperatorTok{.}\FunctionTok{read}\OperatorTok{();}
+
+            \ControlFlowTok{if} \OperatorTok{(}\NormalTok{item }\OperatorTok{\textless{}} \DecValTok{0}\OperatorTok{)}
+                \ControlFlowTok{break}\OperatorTok{;}
+
+            \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{println}\OperatorTok{(}\NormalTok{item}\OperatorTok{);}
+        \OperatorTok{\}}
+
+        \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{println}\OperatorTok{(}\StringTok{"Consumer ended."}\OperatorTok{);}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Producer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task1f}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{ChannelOutputInt}\OperatorTok{;}
+
+\CommentTok{/**}
+ \CommentTok{*}\NormalTok{ Producer class}\CommentTok{:}\NormalTok{ produces }\CommentTok{100}\NormalTok{ random integers and sends them on}
+ \CommentTok{*}\NormalTok{ output channel}\CommentTok{,}\NormalTok{ then sends }\CommentTok{{-}1}\NormalTok{ and terminates}\CommentTok{.}
+ \CommentTok{*}\NormalTok{ The random integers are in a given range }\CommentTok{[}\NormalTok{start}\CommentTok{...}\NormalTok{start}\CommentTok{+100)}
+ \CommentTok{*/}
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Producer }\KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ ChannelOutputInt channel}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ start}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{Producer}\OperatorTok{(}\NormalTok{ChannelOutputInt out}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ start}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        channel }\OperatorTok{=}\NormalTok{ out}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{start} \OperatorTok{=}\NormalTok{ start}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ k }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ k }\OperatorTok{\textless{}} \DecValTok{100}\OperatorTok{;}\NormalTok{ k}\OperatorTok{++)} \OperatorTok{\{}
+            \DataTypeTok{int}\NormalTok{ item }\OperatorTok{=} \OperatorTok{(}\DataTypeTok{int}\OperatorTok{)} \OperatorTok{(}\BuiltInTok{Math}\OperatorTok{.}\FunctionTok{random}\OperatorTok{()} \OperatorTok{*} \DecValTok{100}\OperatorTok{)} \OperatorTok{+} \DecValTok{1} \OperatorTok{+}\NormalTok{ start}\OperatorTok{;}
+\NormalTok{            channel}\OperatorTok{.}\FunctionTok{write}\OperatorTok{(}\NormalTok{item}\OperatorTok{);}
+        \OperatorTok{\}}
+
+\NormalTok{        channel}\OperatorTok{.}\FunctionTok{write}\OperatorTok{({-}}\DecValTok{1}\OperatorTok{);}
+
+        \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{println}\OperatorTok{(}\StringTok{"Producer"} \OperatorTok{+}\NormalTok{ start }\OperatorTok{+} \StringTok{" ended."}\OperatorTok{);}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Buffer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task1f}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{Alternative}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{Guard}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{One2OneChannelInt}\OperatorTok{;}
+
+\CommentTok{/**}
+ \CommentTok{*}\NormalTok{ Buffer class}\CommentTok{:}\NormalTok{ Manages communication between Producer}
+ \CommentTok{*}\NormalTok{ and Consumer classes}\CommentTok{.}
+ \CommentTok{*/}
+\KeywordTok{public} \KeywordTok{class} \BuiltInTok{Buffer} \KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ One2OneChannelInt}\OperatorTok{[]}\NormalTok{ in}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ One2OneChannelInt}\OperatorTok{[]}\NormalTok{ req}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ One2OneChannelInt}\OperatorTok{[]}\NormalTok{ out}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{int}\OperatorTok{[]}\NormalTok{ buffer }\OperatorTok{=} \KeywordTok{new} \DataTypeTok{int}\OperatorTok{[}\DecValTok{10}\OperatorTok{];}
+    \KeywordTok{private} \DataTypeTok{int}\NormalTok{ hd }\OperatorTok{=} \OperatorTok{{-}}\DecValTok{1}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{int}\NormalTok{ tl }\OperatorTok{=} \OperatorTok{{-}}\DecValTok{1}\OperatorTok{;}
+
+    \KeywordTok{public} \BuiltInTok{Buffer}\OperatorTok{(}
+\NormalTok{        One2OneChannelInt}\OperatorTok{[]}\NormalTok{ in}\OperatorTok{,}
+\NormalTok{        One2OneChannelInt}\OperatorTok{[]}\NormalTok{ req}\OperatorTok{,}
+\NormalTok{        One2OneChannelInt}\OperatorTok{[]}\NormalTok{ out}
+    \OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{in} \OperatorTok{=}\NormalTok{ in}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{req} \OperatorTok{=}\NormalTok{ req}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{out} \OperatorTok{=}\NormalTok{ out}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \BuiltInTok{Guard}\OperatorTok{[]}\NormalTok{ guards }\OperatorTok{=} \OperatorTok{\{}\NormalTok{in}\OperatorTok{[}\DecValTok{0}\OperatorTok{].}\FunctionTok{in}\OperatorTok{(),}\NormalTok{ in}\OperatorTok{[}\DecValTok{1}\OperatorTok{].}\FunctionTok{in}\OperatorTok{(),}\NormalTok{ req}\OperatorTok{[}\DecValTok{0}\OperatorTok{].}\FunctionTok{in}\OperatorTok{(),}\NormalTok{ req}\OperatorTok{[}\DecValTok{1}\OperatorTok{].}\FunctionTok{in}\OperatorTok{()\};}
+\NormalTok{        Alternative alt }\OperatorTok{=} \KeywordTok{new} \FunctionTok{Alternative}\OperatorTok{(}\NormalTok{guards}\OperatorTok{);}
+
+        \DataTypeTok{int}\NormalTok{ countdown }\OperatorTok{=} \DecValTok{4}\OperatorTok{;}
+
+        \ControlFlowTok{while} \OperatorTok{(}\NormalTok{countdown }\OperatorTok{\textgreater{}} \DecValTok{0}\OperatorTok{)} \OperatorTok{\{}
+            \DataTypeTok{int}\NormalTok{ index }\OperatorTok{=}\NormalTok{ alt}\OperatorTok{.}\FunctionTok{select}\OperatorTok{();}
+            \ControlFlowTok{switch} \OperatorTok{(}\NormalTok{index}\OperatorTok{)} \OperatorTok{\{}
+                \ControlFlowTok{case} \DecValTok{0}\OperatorTok{:}
+                \ControlFlowTok{case} \DecValTok{1}\OperatorTok{:}
+                    \ControlFlowTok{if} \OperatorTok{(}\NormalTok{hd }\OperatorTok{\textless{}}\NormalTok{ tl }\OperatorTok{+} \DecValTok{11}\OperatorTok{)} \OperatorTok{\{}
+                        \DataTypeTok{int}\NormalTok{ item }\OperatorTok{=}\NormalTok{ in}\OperatorTok{[}\NormalTok{index}\OperatorTok{].}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{();}
+
+                        \ControlFlowTok{if} \OperatorTok{(}\NormalTok{item }\OperatorTok{\textless{}} \DecValTok{0}\OperatorTok{)}
+\NormalTok{                            countdown}\OperatorTok{{-}{-};}
+                        \ControlFlowTok{else} \OperatorTok{\{}
+\NormalTok{                            hd}\OperatorTok{++;}
+\NormalTok{                            buffer}\OperatorTok{[}\NormalTok{hd }\OperatorTok{\%}\NormalTok{ buffer}\OperatorTok{.}\FunctionTok{length}\OperatorTok{]} \OperatorTok{=}\NormalTok{ item}\OperatorTok{;}
+                        \OperatorTok{\}}
+                    \OperatorTok{\}}
+                    \ControlFlowTok{break}\OperatorTok{;}
+                \ControlFlowTok{case} \DecValTok{2}\OperatorTok{:}
+                \ControlFlowTok{case} \DecValTok{3}\OperatorTok{:}
+                    \ControlFlowTok{if} \OperatorTok{(}\NormalTok{tl }\OperatorTok{\textless{}}\NormalTok{ hd}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{                        req}\OperatorTok{[}\NormalTok{index }\OperatorTok{{-}} \DecValTok{2}\OperatorTok{].}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{();}
+\NormalTok{                        tl}\OperatorTok{++;}
+                        \DataTypeTok{int}\NormalTok{ item }\OperatorTok{=}\NormalTok{ buffer}\OperatorTok{[}\NormalTok{tl }\OperatorTok{\%}\NormalTok{ buffer}\OperatorTok{.}\FunctionTok{length}\OperatorTok{];}
+\NormalTok{                        out}\OperatorTok{[}\NormalTok{index }\OperatorTok{{-}} \DecValTok{2}\OperatorTok{].}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{(}\NormalTok{item}\OperatorTok{);}
+                    \OperatorTok{\}} \ControlFlowTok{else} \ControlFlowTok{if} \OperatorTok{(}\NormalTok{countdown }\OperatorTok{\textless{}=} \DecValTok{2}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{                        req}\OperatorTok{[}\NormalTok{index }\OperatorTok{{-}} \DecValTok{2}\OperatorTok{].}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{();}
+\NormalTok{                        out}\OperatorTok{[}\NormalTok{index }\OperatorTok{{-}} \DecValTok{2}\OperatorTok{].}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{({-}}\DecValTok{1}\OperatorTok{);}
+\NormalTok{                        countdown}\OperatorTok{{-}{-};}
+                    \OperatorTok{\}}
+                    \ControlFlowTok{break}\OperatorTok{;}
+            \OperatorTok{\}}
+        \OperatorTok{\}}
+
+        \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{println}\OperatorTok{(}\StringTok{"Buffer ended."}\OperatorTok{);}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Task1fMain.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task1f}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{Channel}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{One2OneChannelInt}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{Parallel}\OperatorTok{;}
+
+\CommentTok{/**}
+ \CommentTok{*}\NormalTok{ Main program class for Producer}\CommentTok{/}\NormalTok{Consumer example}\CommentTok{.}
+ \CommentTok{*}\NormalTok{ Sets up channels}\CommentTok{,}\NormalTok{ creates processes then}
+ \CommentTok{*}\NormalTok{ executes them in parallel}\CommentTok{,}\NormalTok{ using JCSP}\CommentTok{.}
+ \CommentTok{*/}
+\KeywordTok{public} \DataTypeTok{final} \KeywordTok{class}\NormalTok{ Task1fMain }\OperatorTok{\{}
+    \KeywordTok{public} \DataTypeTok{static} \DataTypeTok{void} \FunctionTok{main}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{[]}\NormalTok{ args}\OperatorTok{)} \OperatorTok{\{}
+        \CommentTok{// Create channel objects}
+\NormalTok{        One2OneChannelInt}\OperatorTok{[]}\NormalTok{ prodChan }\OperatorTok{=} \OperatorTok{\{}\BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneInt}\OperatorTok{(),} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneInt}\OperatorTok{()\};}
+\NormalTok{        One2OneChannelInt}\OperatorTok{[]}\NormalTok{ consReq }\OperatorTok{=} \OperatorTok{\{}\BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneInt}\OperatorTok{(),} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneInt}\OperatorTok{()\};}
+\NormalTok{        One2OneChannelInt}\OperatorTok{[]}\NormalTok{ consChan }\OperatorTok{=} \OperatorTok{\{}\BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneInt}\OperatorTok{(),} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneInt}\OperatorTok{()\};}
+
+        \CommentTok{// Create parallel construct}
+\NormalTok{        CSProcess}\OperatorTok{[]}\NormalTok{ procList }\OperatorTok{=} \OperatorTok{\{}
+            \KeywordTok{new} \FunctionTok{Producer}\OperatorTok{(}\NormalTok{prodChan}\OperatorTok{[}\DecValTok{0}\OperatorTok{].}\FunctionTok{out}\OperatorTok{(),} \DecValTok{0}\OperatorTok{),}
+            \KeywordTok{new} \FunctionTok{Producer}\OperatorTok{(}\NormalTok{prodChan}\OperatorTok{[}\DecValTok{1}\OperatorTok{].}\FunctionTok{out}\OperatorTok{(),} \DecValTok{100}\OperatorTok{),}
+            \KeywordTok{new} \BuiltInTok{Buffer}\OperatorTok{(}\NormalTok{prodChan}\OperatorTok{,}\NormalTok{ consReq}\OperatorTok{,}\NormalTok{ consChan}\OperatorTok{),}
+            \KeywordTok{new} \FunctionTok{Consumer}\OperatorTok{(}\NormalTok{consReq}\OperatorTok{[}\DecValTok{0}\OperatorTok{].}\FunctionTok{out}\OperatorTok{(),}\NormalTok{ consChan}\OperatorTok{[}\DecValTok{0}\OperatorTok{].}\FunctionTok{in}\OperatorTok{()),}
+            \KeywordTok{new} \FunctionTok{Consumer}\OperatorTok{(}\NormalTok{consReq}\OperatorTok{[}\DecValTok{1}\OperatorTok{].}\FunctionTok{out}\OperatorTok{(),}\NormalTok{ consChan}\OperatorTok{[}\DecValTok{1}\OperatorTok{].}\FunctionTok{in}\OperatorTok{())}
+        \OperatorTok{\};}
+
+\NormalTok{        Parallel par }\OperatorTok{=} \KeywordTok{new} \FunctionTok{Parallel}\OperatorTok{(}\NormalTok{procList}\OperatorTok{);}
+\NormalTok{        par}\OperatorTok{.}\FunctionTok{run}\OperatorTok{();}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    Opis poszczególnych klas:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Producer}: jest to najprostsza klasa, która generuje 100
+  losowych liczb, a następnie wysyła -1, aby zasygnalizować, że
+  producent zakończył pracę.
+\item
+  \textbf{Consumer}: jest to nieco bardziej skomplikowana klasa. Musi
+  sygnalizować procesowi bufora, że konsument jest gotowy do odczytania
+  elementu. Wynika to z faktu, że mechanizm ``alternatywy''
+  (\texttt{Alternative}) JCSP działa tylko z kanałami ``wejściowymi''
+  (tzn. \texttt{ChannelInput}) - nie ma bezpośredniego sposobu na
+  sprawdzenie, czy kanał wyjściowy jest gotowy do odczytu. Konsument
+  ``sygnalizuje'' buforowi, że jest gotowy do odczytu, pisząc do
+  drugiego kanału \texttt{req}. Proces bufora następnie używa tego
+  kanału ``żądania'' z alternatywą strzeżoną, aby powiedzieć, kiedy
+  konsumenci są gotowi do odczytu/konsumpcji kolejnych danych.
+\item
+  \textbf{Buffer}: jest najbardziej skomplikowaną częścią systemu.
+  Wykorzystuje konstrukcję \texttt{Alternative} z kanałami wejściowymi
+  (od dwóch producentów i od dwóch konsumentów). Dzięki temu może
+  reagować na gotowość dowolnego z czterech procesów, pod warunkiem, że
+  dostępne są miejsce i/lub dane. Co ciekawe, ``czyste zakończenie''
+  jest obsługiwane poprzez wysyłanie wartości ujemnej przez producenta.
+  To pozwala na eleganckie zakończenie pracy systemu.
+\end{enumerate}
+
+    \hypertarget{zadanie-2}{%
+\subsection{Zadanie 2}\label{zadanie-2}}
+
+Implementacja wspólnych dla obu rozwiązań klas (bufor, producent,
+konsument itd.) jest przedstawiona poniżej.
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// CSPConsumer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Supplier}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ CSPConsumer }\KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \BuiltInTok{Logger}\NormalTok{ logger }\OperatorTok{=} \BuiltInTok{Logger}\OperatorTok{.}\FunctionTok{getInstance}\OperatorTok{();}
+
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ Supplier}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ supplier}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{Runnable}\NormalTok{ onFinishListener}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ maxIter}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{CSPConsumer}\OperatorTok{(}
+\NormalTok{        Supplier}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ supplier}\OperatorTok{,}
+        \BuiltInTok{Runnable}\NormalTok{ onFinishListener}\OperatorTok{,}
+        \DataTypeTok{int}\NormalTok{ maxIter}
+    \OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{supplier} \OperatorTok{=}\NormalTok{ supplier}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{onFinishListener} \OperatorTok{=}\NormalTok{ onFinishListener}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{maxIter} \OperatorTok{=}\NormalTok{ maxIter}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ maxIter}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)} \OperatorTok{\{}
+            \DataTypeTok{var}\NormalTok{ p }\OperatorTok{=}\NormalTok{ supplier}\OperatorTok{.}\FunctionTok{get}\OperatorTok{();}
+\NormalTok{            logger}\OperatorTok{.}\FunctionTok{log}\OperatorTok{(}\KeywordTok{this}\OperatorTok{,} \StringTok{"Consumed: "} \OperatorTok{+}\NormalTok{ p}\OperatorTok{);}
+        \OperatorTok{\}}
+
+\NormalTok{        onFinishListener}\OperatorTok{.}\FunctionTok{run}\OperatorTok{();}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// CSPProducer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Consumer}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ CSPProducer }\KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \BuiltInTok{Logger}\NormalTok{ logger }\OperatorTok{=} \BuiltInTok{Logger}\OperatorTok{.}\FunctionTok{getInstance}\OperatorTok{();}
+
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ Consumer}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ consumer}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ maxIter}\OperatorTok{;}
+
+    \KeywordTok{public} \FunctionTok{CSPProducer}\OperatorTok{(}\NormalTok{Consumer}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ consumer}\OperatorTok{,} \DataTypeTok{int}\NormalTok{ maxIter}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{consumer} \OperatorTok{=}\NormalTok{ consumer}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{maxIter} \OperatorTok{=}\NormalTok{ maxIter}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ maxIter}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)} \OperatorTok{\{}
+            \DataTypeTok{var}\NormalTok{ p }\OperatorTok{=} \KeywordTok{new} \FunctionTok{Portion}\OperatorTok{(}\NormalTok{i}\OperatorTok{);}
+\NormalTok{            consumer}\OperatorTok{.}\FunctionTok{accept}\OperatorTok{(}\NormalTok{p}\OperatorTok{);}
+\NormalTok{            logger}\OperatorTok{.}\FunctionTok{log}\OperatorTok{(}\KeywordTok{this}\OperatorTok{,} \StringTok{"Produced a new portion of data"}\OperatorTok{);}
+        \OperatorTok{\}}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Buffer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.}\ImportTok{CSProcess}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Consumer}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Supplier}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class} \BuiltInTok{Buffer} \KeywordTok{implements}\NormalTok{ CSProcess }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ Supplier}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ supplier}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{final}\NormalTok{ Consumer}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ consumer}\OperatorTok{;}
+
+    \KeywordTok{public} \BuiltInTok{Buffer}\OperatorTok{(}\NormalTok{Supplier}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ supplier}\OperatorTok{,}\NormalTok{ Consumer}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ consumer}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{supplier} \OperatorTok{=}\NormalTok{ supplier}\OperatorTok{;}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{consumer} \OperatorTok{=}\NormalTok{ consumer}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{while} \OperatorTok{(}\KeywordTok{true}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{            consumer}\OperatorTok{.}\FunctionTok{accept}\OperatorTok{(}\NormalTok{supplier}\OperatorTok{.}\FunctionTok{get}\OperatorTok{());}
+        \OperatorTok{\}}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Portion.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{record} \FunctionTok{Portion}\OperatorTok{(}
+    \DataTypeTok{int}\NormalTok{ val}
+\OperatorTok{)} \OperatorTok{\{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Logger.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Consumer}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class} \BuiltInTok{Logger} \OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \BuiltInTok{Logger}\NormalTok{ logger }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Logger}\OperatorTok{();}
+
+    \KeywordTok{private}\NormalTok{ Consumer}\OperatorTok{\textless{}}\BuiltInTok{String}\OperatorTok{\textgreater{}}\NormalTok{ consumer }\OperatorTok{=} \FunctionTok{defaultConsumer}\OperatorTok{();}
+
+    \KeywordTok{private} \DataTypeTok{static}\NormalTok{ Consumer}\OperatorTok{\textless{}}\BuiltInTok{String}\OperatorTok{\textgreater{}} \FunctionTok{defaultConsumer}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return} \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{::}\NormalTok{println}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{private} \BuiltInTok{Logger}\OperatorTok{()} \OperatorTok{\{}
+        \CommentTok{// empty}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{log}\OperatorTok{(}\BuiltInTok{String}\NormalTok{ tag}\OperatorTok{,} \BuiltInTok{Object}\NormalTok{ o}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        consumer}\OperatorTok{.}\FunctionTok{accept}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}\StringTok{"[}\SpecialCharTok{\%s}\StringTok{] }\SpecialCharTok{\%s}\StringTok{"}\OperatorTok{,}\NormalTok{ tag}\OperatorTok{,}\NormalTok{ o}\OperatorTok{));}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{log}\OperatorTok{(}\BuiltInTok{Object}\NormalTok{ context}\OperatorTok{,} \BuiltInTok{Object}\NormalTok{ o}\OperatorTok{)} \OperatorTok{\{}
+        \FunctionTok{log}\OperatorTok{(}\NormalTok{context}\OperatorTok{.}\FunctionTok{getClass}\OperatorTok{().}\FunctionTok{getSimpleName}\OperatorTok{(),}\NormalTok{ o}\OperatorTok{);}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{log}\OperatorTok{(}\BuiltInTok{Object}\NormalTok{ o}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{        consumer}\OperatorTok{.}\FunctionTok{accept}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{.}\FunctionTok{valueOf}\OperatorTok{(}\NormalTok{o}\OperatorTok{));}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{setConsumer}\OperatorTok{(}\NormalTok{Consumer}\OperatorTok{\textless{}}\BuiltInTok{String}\OperatorTok{\textgreater{}}\NormalTok{ consumer}\OperatorTok{)} \OperatorTok{\{}
+        \KeywordTok{this}\OperatorTok{.}\FunctionTok{consumer} \OperatorTok{=}\NormalTok{ consumer}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{mute}\OperatorTok{()} \OperatorTok{\{}
+        \FunctionTok{setConsumer}\OperatorTok{(}\NormalTok{s }\OperatorTok{{-}\textgreater{}} \OperatorTok{\{\});}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{unmute}\OperatorTok{()} \OperatorTok{\{}
+        \FunctionTok{setConsumer}\OperatorTok{(}\FunctionTok{defaultConsumer}\OperatorTok{());}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{static} \BuiltInTok{Logger} \FunctionTok{getInstance}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ logger}\OperatorTok{;}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Timer.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class} \BuiltInTok{Timer} \OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{long}\NormalTok{ startTime }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{long}\NormalTok{ endTime }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{start}\OperatorTok{()} \OperatorTok{\{}
+\NormalTok{        startTime }\OperatorTok{=} \BuiltInTok{System}\OperatorTok{.}\FunctionTok{currentTimeMillis}\OperatorTok{();}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{void} \FunctionTok{end}\OperatorTok{()} \OperatorTok{\{}
+\NormalTok{        endTime }\OperatorTok{=} \BuiltInTok{System}\OperatorTok{.}\FunctionTok{currentTimeMillis}\OperatorTok{();}
+    \OperatorTok{\}}
+
+    \KeywordTok{public} \DataTypeTok{long} \FunctionTok{elapsedTime}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ endTime }\OperatorTok{{-}}\NormalTok{ startTime}\OperatorTok{;}
+    \OperatorTok{\}}
+
+    \AttributeTok{@Override}
+    \KeywordTok{public} \BuiltInTok{String} \FunctionTok{toString}\OperatorTok{()} \OperatorTok{\{}
+        \ControlFlowTok{return}\NormalTok{ endTime }\OperatorTok{\textgreater{}} \DecValTok{0} \OperatorTok{?}
+                \BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}\StringTok{"Timer(elapsed=}\SpecialCharTok{\%s}\StringTok{ms)"}\OperatorTok{,} \FunctionTok{elapsedTime}\OperatorTok{())} \OperatorTok{:}
+                \BuiltInTok{String}\OperatorTok{.}\FunctionTok{format}\OperatorTok{(}\StringTok{"Timer(startTime=}\SpecialCharTok{\%s}\StringTok{ms)"}\OperatorTok{,}\NormalTok{ startTime}\OperatorTok{);}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{kolejnoux15bux107-pobierania-nie-ma-znaczenia}{%
+\subsubsection{Kolejność pobierania nie ma
+znaczenia}\label{kolejnoux15bux107-pobierania-nie-ma-znaczenia}}
+
+W tej wersji mamy \(n\) producentów, \(m\) konsumentów oraz \(k\)
+buforów. Każdy bufor jest o rozmiarze 1.
+
+Komunikacja będzie się odbywała jak na schemacie poniżej:
+
+\begin{verbatim}
+ppp ---> bbb ---> ccc
+ppp ---> bbb ---> ccc
+ppp ---> bbb ---> ccc
+\end{verbatim}
+
+gdzie \texttt{p} - producent, \texttt{b} - bufor, \texttt{c} -
+konsument.
+
+Warto zauważyć, że:
+
+\begin{itemize}
+\tightlist
+\item
+  Każdy producent może zapisać dane do dowolnego bufora
+\item
+  Każdy konsument może odczytać dane z dowolnego bufora
+\end{itemize}
+
+W związku z powyższym, do komunikacji należy stworzyć 2 kanały typu
+\texttt{Any2AnyChannel}: jeden do komunikacji
+\texttt{producent\ -\textgreater{}\ bufor}, zaś drugi
+\texttt{bufor\ -\textgreater{}\ konsument}. W tym celu zostanie użyta
+statyczna metoda
+\href{https://www.cs.kent.ac.uk/projects/ofa/jcsp/jcsp-1.1-rc4/jcsp-doc/org/jcsp/lang/Channel.html\#any2any()}{\texttt{Channel.any2any()}}:
+
+\begin{quote}
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{public} \DataTypeTok{static}\NormalTok{ Any2AnyChannel }\FunctionTok{any2any}\OperatorTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+This constructs an Object carrying channel that may be connected to any
+number of writer processes and any number of reader processes. The
+writers contend safely with each other to send the next message. The
+readers contend safely with each other to take the next message. Each
+message flows from just one of the writers to just one of the readers --
+this is not a broadcasting-and-combining channel. The channel is
+zero-buffered -- the writer and reader processes must synchronise.
+
+Returns the channel.
+\end{quote}
+
+Implementacja jest przedstawiona poniżej.
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Task2aMain.java}
+
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.*;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{concurrent}\OperatorTok{.}\ImportTok{atomic}\OperatorTok{.}\ImportTok{AtomicInteger}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Task2aMain }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ BUFFERS }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ CONSUMERS }\OperatorTok{=} \DecValTok{1}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ PRODUCERS }\OperatorTok{=} \DecValTok{1}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ CONSUMER\_MAX\_ITER }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ PRODUCER\_MAX\_ITER }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+
+    \KeywordTok{public} \DataTypeTok{static} \DataTypeTok{void} \FunctionTok{main}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{[]}\NormalTok{ args}\OperatorTok{)} \OperatorTok{\{}
+        \DataTypeTok{var}\NormalTok{ timer }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Timer}\OperatorTok{();}
+
+        \CommentTok{// Array of all processes}
+        \DataTypeTok{var}\NormalTok{ processes }\OperatorTok{=} \KeywordTok{new}\NormalTok{ CSProcess}\OperatorTok{[}\NormalTok{BUFFERS }\OperatorTok{+}\NormalTok{ CONSUMERS }\OperatorTok{+}\NormalTok{ PRODUCERS}\OperatorTok{];}
+
+        \CommentTok{// Channels for interprocess communication}
+\NormalTok{        Any2AnyChannel}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ consChannel }\OperatorTok{=} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{any2any}\OperatorTok{();}
+\NormalTok{        Any2AnyChannel}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ prodChannel }\OperatorTok{=} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{any2any}\OperatorTok{();}
+
+        \CommentTok{// Producers}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ PRODUCERS}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)}
+\NormalTok{            processes}\OperatorTok{[}\NormalTok{i}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \FunctionTok{CSPProducer}\OperatorTok{(}
+\NormalTok{                p }\OperatorTok{{-}\textgreater{}}\NormalTok{ prodChannel}\OperatorTok{.}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{(}\NormalTok{p}\OperatorTok{),}
+\NormalTok{                PRODUCER\_MAX\_ITER}\OperatorTok{);}
+
+        \CommentTok{// Consumers}
+        \DataTypeTok{var}\NormalTok{ consumerOnFinishListener }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Runnable}\OperatorTok{()} \OperatorTok{\{}
+            \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{AtomicInteger}\NormalTok{ counter }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{AtomicInteger}\OperatorTok{(}\DecValTok{0}\OperatorTok{);}
+
+            \AttributeTok{@Override}
+            \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+                \ControlFlowTok{if} \OperatorTok{(}\NormalTok{counter}\OperatorTok{.}\FunctionTok{incrementAndGet}\OperatorTok{()} \OperatorTok{==}\NormalTok{ CONSUMERS}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{                    timer}\OperatorTok{.}\FunctionTok{end}\OperatorTok{();}
+                    \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{println}\OperatorTok{(}\NormalTok{timer}\OperatorTok{);}
+                    \BuiltInTok{System}\OperatorTok{.}\FunctionTok{exit}\OperatorTok{(}\DecValTok{0}\OperatorTok{);}
+                \OperatorTok{\}}
+            \OperatorTok{\}}
+        \OperatorTok{\};}
+
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ CONSUMERS}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{            processes}\OperatorTok{[}\NormalTok{i }\OperatorTok{+}\NormalTok{ PRODUCERS}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \FunctionTok{CSPConsumer}\OperatorTok{(}
+                    \OperatorTok{()} \OperatorTok{{-}\textgreater{}}\NormalTok{ consChannel}\OperatorTok{.}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{(),}
+\NormalTok{                    consumerOnFinishListener}\OperatorTok{,}
+\NormalTok{                    CONSUMER\_MAX\_ITER}\OperatorTok{);}
+        \OperatorTok{\}}
+
+        \CommentTok{// Buffers}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ BUFFERS}\OperatorTok{;}\NormalTok{ i}\OperatorTok{++)} \OperatorTok{\{}
+\NormalTok{            processes}\OperatorTok{[}\NormalTok{i }\OperatorTok{+}\NormalTok{ PRODUCERS }\OperatorTok{+}\NormalTok{ CONSUMERS}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \BuiltInTok{Buffer}\OperatorTok{(}
+                    \OperatorTok{()} \OperatorTok{{-}\textgreater{}}\NormalTok{ prodChannel}\OperatorTok{.}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{(),}
+\NormalTok{                    p }\OperatorTok{{-}\textgreater{}}\NormalTok{ consChannel}\OperatorTok{.}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{(}\NormalTok{p}\OperatorTok{));}
+        \OperatorTok{\}}
+
+        \CommentTok{// Run in parallel}
+        \DataTypeTok{var}\NormalTok{ par }\OperatorTok{=} \KeywordTok{new} \FunctionTok{Parallel}\OperatorTok{(}\NormalTok{processes}\OperatorTok{);}
+
+\NormalTok{        timer}\OperatorTok{.}\FunctionTok{start}\OperatorTok{();}
+\NormalTok{        par}\OperatorTok{.}\FunctionTok{run}\OperatorTok{();}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{kolejnoux15bux107-pobierania-ma-znaczenie}{%
+\subsubsection{Kolejność pobierania ma
+znaczenie}\label{kolejnoux15bux107-pobierania-ma-znaczenie}}
+
+W tej wersji mamy również \(n\) producentów, \(m\) konsumentów oraz
+\(k\) buforów. Każdy bufor jest o rozmiarze 1.
+
+W tym przypadku producenci przekazują dane do pierwszego bufora, który
+przekazuje swoją zawartość do nastepnego, aż dane nie trafią do
+konsumenta. W ten sposób da się zachować kolejność. Schematycznie do
+wygląda następująco:
+
+\begin{verbatim}
+ppp
+ppp ----- b
+ppp       |
+          b
+          |
+          b
+          |       ccc
+          b ----- ccc
+                  ccc
+\end{verbatim}
+
+gdzie \texttt{p} - producent, \texttt{b} - bufor, \texttt{c} -
+konsument.
+
+Warto zauważyć, że:
+
+\begin{itemize}
+\tightlist
+\item
+  Każdy producent może zapisać dane do pierwszego bufora
+\item
+  Każdy konsument może odczytać dane z ostatniego bufora
+\end{itemize}
+
+W związku z powyższym, do komunikacji należy stworzyć kanały o
+następujących typach i liczbie:
+
+\begin{itemize}
+\tightlist
+\item
+  1 kanał typu
+  \href{https://www.cs.kent.ac.uk/projects/ofa/jcsp/jcsp-1.1-rc4/jcsp-doc/org/jcsp/lang/Channel.html\#any2one()}{\texttt{Any2OneChannel}}
+  służący do komunikacji producentów z pierwszym buforem
+\item
+  1 kanał typu
+  \href{https://www.cs.kent.ac.uk/projects/ofa/jcsp/jcsp-1.1-rc4/jcsp-doc/org/jcsp/lang/Channel.html\#one2any()}{\texttt{One2AnyChannel}}
+  służący do komunikacji ostatniego bufora z konsumentami
+\item
+  \((k - 1)\) kanałów typu
+  \href{https://www.cs.kent.ac.uk/projects/ofa/jcsp/jcsp-1.1-rc4/jcsp-doc/org/jcsp/lang/Channel.html\#one2one()}{\texttt{One2OneChannel}}
+  służących do komunikacji buforów między sobą
+\end{itemize}
+
+Implementacja jest przedstawiona poniżej.
+
+    \begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{package}\ImportTok{ pl}\OperatorTok{.}\ImportTok{edu}\OperatorTok{.}\ImportTok{agh}\OperatorTok{.}\ImportTok{tw}\OperatorTok{.}\ImportTok{knapp}\OperatorTok{.}\ImportTok{lab13}\OperatorTok{.}\ImportTok{task2}\OperatorTok{;}
+
+\KeywordTok{import} \ImportTok{org}\OperatorTok{.}\ImportTok{jcsp}\OperatorTok{.}\ImportTok{lang}\OperatorTok{.*;}
+
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{concurrent}\OperatorTok{.}\ImportTok{atomic}\OperatorTok{.}\ImportTok{AtomicInteger}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Consumer}\OperatorTok{;}
+\KeywordTok{import} \ImportTok{java}\OperatorTok{.}\ImportTok{util}\OperatorTok{.}\ImportTok{function}\OperatorTok{.}\ImportTok{Supplier}\OperatorTok{;}
+
+\KeywordTok{public} \KeywordTok{class}\NormalTok{ Task2bMain }\OperatorTok{\{}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ BUFFERS }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ CONSUMERS }\OperatorTok{=} \DecValTok{1}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ PRODUCERS }\OperatorTok{=} \DecValTok{1}\OperatorTok{;}
+
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ CONSUMER\_MAX\_ITER }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+    \KeywordTok{private} \DataTypeTok{static} \DataTypeTok{final} \DataTypeTok{int}\NormalTok{ PRODUCER\_MAX\_ITER }\OperatorTok{=} \DecValTok{100}\OperatorTok{;}
+
+    \KeywordTok{public} \DataTypeTok{static} \DataTypeTok{void} \FunctionTok{main}\OperatorTok{(}\BuiltInTok{String}\OperatorTok{[]}\NormalTok{ args}\OperatorTok{)} \OperatorTok{\{}
+        \DataTypeTok{var}\NormalTok{ timer }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Timer}\OperatorTok{();}
+
+        \CommentTok{// Array of all processes}
+        \DataTypeTok{var}\NormalTok{ processes }\OperatorTok{=} \KeywordTok{new}\NormalTok{ CSProcess}\OperatorTok{[}\NormalTok{BUFFERS }\OperatorTok{+}\NormalTok{ CONSUMERS }\OperatorTok{+}\NormalTok{ PRODUCERS}\OperatorTok{];}
+
+        \CommentTok{// Channels for interprocess communication}
+\NormalTok{        One2OneChannel}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}[]}\NormalTok{ buffChannels }\OperatorTok{=} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2oneArray}\OperatorTok{(}\NormalTok{BUFFERS }\OperatorTok{{-}} \DecValTok{1}\OperatorTok{);}
+\NormalTok{        Any2OneChannel}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ prodChannel }\OperatorTok{=} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{any2one}\OperatorTok{();}
+\NormalTok{        One2AnyChannel}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ consChannel }\OperatorTok{=} \BuiltInTok{Channel}\OperatorTok{.}\FunctionTok{one2any}\OperatorTok{();}
+
+\NormalTok{        Consumer}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ prodConsumer }\OperatorTok{=}\NormalTok{ p }\OperatorTok{{-}\textgreater{}}\NormalTok{ prodChannel}\OperatorTok{.}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{(}\NormalTok{p}\OperatorTok{);}
+\NormalTok{        Supplier}\OperatorTok{\textless{}}\NormalTok{Portion}\OperatorTok{\textgreater{}}\NormalTok{ consSupplier }\OperatorTok{=} \OperatorTok{()} \OperatorTok{{-}\textgreater{}}\NormalTok{ consChannel}\OperatorTok{.}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{();}
+
+        \CommentTok{// Producers}
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ PRODUCERS}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)}
+\NormalTok{            processes}\OperatorTok{[}\NormalTok{i}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \FunctionTok{CSPProducer}\OperatorTok{(}\NormalTok{prodConsumer}\OperatorTok{,}\NormalTok{ PRODUCER\_MAX\_ITER}\OperatorTok{);}
+
+        \CommentTok{// Buffers}
+\NormalTok{        processes}\OperatorTok{[}\NormalTok{PRODUCERS}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \BuiltInTok{Buffer}\OperatorTok{(}
+                \OperatorTok{()} \OperatorTok{{-}\textgreater{}}\NormalTok{ prodChannel}\OperatorTok{.}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{(),}
+\NormalTok{                p }\OperatorTok{{-}\textgreater{}}\NormalTok{ buffChannels}\OperatorTok{[}\DecValTok{0}\OperatorTok{].}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{(}\NormalTok{p}\OperatorTok{));}
+
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{1}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ BUFFERS }\OperatorTok{{-}} \DecValTok{1}\OperatorTok{;}\NormalTok{ i}\OperatorTok{++)} \OperatorTok{\{}
+            \DataTypeTok{int}\NormalTok{ j }\OperatorTok{=}\NormalTok{ i}\OperatorTok{;}
+
+\NormalTok{            processes}\OperatorTok{[}\NormalTok{i }\OperatorTok{+}\NormalTok{ PRODUCERS}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \BuiltInTok{Buffer}\OperatorTok{(}
+                    \OperatorTok{()} \OperatorTok{{-}\textgreater{}}\NormalTok{ buffChannels}\OperatorTok{[}\NormalTok{j }\OperatorTok{{-}} \DecValTok{1}\OperatorTok{].}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{(),}
+\NormalTok{                    p }\OperatorTok{{-}\textgreater{}}\NormalTok{ buffChannels}\OperatorTok{[}\NormalTok{j}\OperatorTok{].}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{(}\NormalTok{p}\OperatorTok{));}
+        \OperatorTok{\}}
+
+\NormalTok{        processes}\OperatorTok{[}\NormalTok{PRODUCERS }\OperatorTok{+}\NormalTok{ BUFFERS }\OperatorTok{{-}} \DecValTok{1}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \BuiltInTok{Buffer}\OperatorTok{(}
+                \OperatorTok{()} \OperatorTok{{-}\textgreater{}}\NormalTok{ buffChannels}\OperatorTok{[}\NormalTok{BUFFERS }\OperatorTok{{-}} \DecValTok{2}\OperatorTok{].}\FunctionTok{in}\OperatorTok{().}\FunctionTok{read}\OperatorTok{(),}
+\NormalTok{                p }\OperatorTok{{-}\textgreater{}}\NormalTok{ consChannel}\OperatorTok{.}\FunctionTok{out}\OperatorTok{().}\FunctionTok{write}\OperatorTok{(}\NormalTok{p}\OperatorTok{));}
+
+        \CommentTok{// Consumers}
+        \DataTypeTok{var}\NormalTok{ consumerOnFinishListener }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{Runnable}\OperatorTok{()} \OperatorTok{\{}
+            \KeywordTok{private} \DataTypeTok{final} \BuiltInTok{AtomicInteger}\NormalTok{ counter }\OperatorTok{=} \KeywordTok{new} \BuiltInTok{AtomicInteger}\OperatorTok{(}\DecValTok{0}\OperatorTok{);}
+
+            \AttributeTok{@Override}
+            \KeywordTok{public} \DataTypeTok{void} \FunctionTok{run}\OperatorTok{()} \OperatorTok{\{}
+                \ControlFlowTok{if} \OperatorTok{(}\NormalTok{counter}\OperatorTok{.}\FunctionTok{incrementAndGet}\OperatorTok{()} \OperatorTok{==}\NormalTok{ CONSUMERS}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{                    timer}\OperatorTok{.}\FunctionTok{end}\OperatorTok{();}
+                    \BuiltInTok{System}\OperatorTok{.}\FunctionTok{out}\OperatorTok{.}\FunctionTok{println}\OperatorTok{(}\NormalTok{timer}\OperatorTok{);}
+                    \BuiltInTok{System}\OperatorTok{.}\FunctionTok{exit}\OperatorTok{(}\DecValTok{0}\OperatorTok{);}
+                \OperatorTok{\}}
+            \OperatorTok{\}}
+        \OperatorTok{\};}
+
+        \ControlFlowTok{for} \OperatorTok{(}\DataTypeTok{int}\NormalTok{ i }\OperatorTok{=} \DecValTok{0}\OperatorTok{;}\NormalTok{ i }\OperatorTok{\textless{}}\NormalTok{ CONSUMERS}\OperatorTok{;} \OperatorTok{++}\NormalTok{i}\OperatorTok{)}
+\NormalTok{            processes}\OperatorTok{[}\NormalTok{i }\OperatorTok{+}\NormalTok{ PRODUCERS }\OperatorTok{+}\NormalTok{ BUFFERS}\OperatorTok{]} \OperatorTok{=} \KeywordTok{new} \FunctionTok{CSPConsumer}\OperatorTok{(}
+\NormalTok{                consSupplier}\OperatorTok{,}\NormalTok{ consumerOnFinishListener}\OperatorTok{,}\NormalTok{ CONSUMER\_MAX\_ITER}\OperatorTok{);}
+
+        \CommentTok{// Run in parallel}
+        \DataTypeTok{var}\NormalTok{ par }\OperatorTok{=} \KeywordTok{new} \FunctionTok{Parallel}\OperatorTok{(}\NormalTok{processes}\OperatorTok{);}
+
+\NormalTok{        timer}\OperatorTok{.}\FunctionTok{start}\OperatorTok{();}
+\NormalTok{        par}\OperatorTok{.}\FunctionTok{run}\OperatorTok{();}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+    \hypertarget{wyniki}{%
+\section{Wyniki}\label{wyniki}}
+
+W tym rozdziale zostaną zaprezentowane wyniki poszczególnych rozwiązań.
+
+    \hypertarget{zadanie-1}{%
+\subsection{Zadanie 1}\label{zadanie-1}}
+
+    \hypertarget{wersja-podstawowa}{%
+\subsubsection{Wersja podstawowa}\label{wersja-podstawowa}}
+
+Wersja podstawowa demonstruje komunikację
+\texttt{producent\ -\textgreater{}\ konsument} korzystając z 1 kanału.
+Producent zapisuje do kanału liczbę losową. Wynik działania tego
+rozwiązania może wyglądać w sposób następujący:
+
+\begin{verbatim}
+76
+\end{verbatim}
+
+    \hypertarget{wersja-peux142na}{%
+\subsubsection{Wersja pełna}\label{wersja-peux142na}}
+
+W wersji pełnej 2 producentów zapisuje do bufora 100 losowych liczb.
+Następnie 2 konsumentów odczytuje te liczby z bufora. Możliwy wynik:
+
+\begin{verbatim}
+125
+55
+59
+78
+[...]
+147
+198
+197
+101
+Consumer ended.
+Consumer ended.
+Buffer ended.
+Producer0 ended.
+Producer100 ended.
+\end{verbatim}
+
+    \hypertarget{zadanie-2}{%
+\subsection{Zadanie 2}\label{zadanie-2}}
+
+    \hypertarget{kolejnoux15bux107-pobierania-nie-ma-znaczenia}{%
+\subsubsection{Kolejność pobierania nie ma
+znaczenia}\label{kolejnoux15bux107-pobierania-nie-ma-znaczenia}}
+
+Możliwy wynik (100 buforów, 1 producent i 1 konsument, 100 iteracji):
+
+\begin{verbatim}
+[CSPProducer] Produced a new portion of data
+[CSPProducer] Produced a new portion of data
+[CSPProducer] Produced a new portion of data
+[...]
+[CSPConsumer] Consumed: Portion[val=0]
+[CSPConsumer] Consumed: Portion[val=1]
+[CSPConsumer] Consumed: Portion[val=99]
+[CSPConsumer] Consumed: Portion[val=98]
+[CSPConsumer] Consumed: Portion[val=97]
+[...]
+[CSPConsumer] Consumed: Portion[val=4]
+[CSPConsumer] Consumed: Portion[val=3]
+[CSPConsumer] Consumed: Portion[val=2]
+Timer(elapsed=31ms)
+\end{verbatim}
+
+    \hypertarget{kolejnoux15bux107-pobierania-ma-znaczenie}{%
+\subsubsection{Kolejność pobierania ma
+znaczenie}\label{kolejnoux15bux107-pobierania-ma-znaczenie}}
+
+Wynik (100 buforów, 1 producent i 1 konsument, 100 iteracji):
+
+\begin{verbatim}
+[CSPProducer] Produced a new portion of data
+[CSPProducer] Produced a new portion of data
+[CSPProducer] Produced a new portion of data
+[...]
+[CSPConsumer] Consumed: Portion[val=0]
+[CSPConsumer] Consumed: Portion[val=1]
+[CSPConsumer] Consumed: Portion[val=2]
+[CSPConsumer] Consumed: Portion[val=3]
+[CSPConsumer] Consumed: Portion[val=4]
+[CSPConsumer] Consumed: Portion[val=5]
+[...]
+[CSPConsumer] Consumed: Portion[val=95]
+[CSPConsumer] Consumed: Portion[val=96]
+[CSPConsumer] Consumed: Portion[val=97]
+[CSPConsumer] Consumed: Portion[val=98]
+[CSPConsumer] Consumed: Portion[val=99]
+Timer(elapsed=38ms)
+\end{verbatim}
+
+    \hypertarget{poruxf3wnanie-wydajnoux15bci}{%
+\subsubsection{Porównanie
+wydajności}\label{poruxf3wnanie-wydajnoux15bci}}
+
+W celu porównania wydajności powyższe 2 warianty zostaną uruchomione 10
+razy z następującymi parametrami:
+
+\begin{itemize}
+\tightlist
+\item
+  Liczba buforów: 100
+\item
+  Liczba producentów: 25
+\item
+  Liczba konsumentów: 25
+\item
+  Liczba iteracji: 1000
+\item
+  Logowanie zostanie wyłączone
+\end{itemize}
+
+Podczas testowania został użyty następujący sprzęt i oprogramowanie:
+
+\begin{itemize}
+\tightlist
+\item
+  16 × AMD Ryzen 7 4800H with Radeon Graphics
+\item
+  Fedora 38, Linux 6.6.4-200.fc39.x86\_64
+\item
+  openjdk 17.0.9 2023-10-17
+\end{itemize}
+
+W celu przetwarzania i wyświetlania wyników został użyty język Python
+oraz biblioteki \texttt{pandas} i \texttt{matplotlib}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{pip} \PYZhy{}\PYZhy{}version
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+pip 23.3.2 from
+/home/congard/Development/Tools/python/csvenv/lib64/python3.11/site-packages/pip
+(python 3.11)
+Note: you may need to restart the kernel to use updated packages.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{pip} show pandas | grep Version
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Version: 2.1.3
+Note: you may need to restart the kernel to use updated packages.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{pip} show matplotlib | grep Version
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Version: 3.8.1
+Note: you may need to restart the kernel to use updated packages.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{unordered}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{l+m+mi}{390}\PY{p}{,} \PY{l+m+mi}{367}\PY{p}{,} \PY{l+m+mi}{377}\PY{p}{,} \PY{l+m+mi}{390}\PY{p}{,} \PY{l+m+mi}{382}\PY{p}{,} \PY{l+m+mi}{367}\PY{p}{,} \PY{l+m+mi}{383}\PY{p}{,} \PY{l+m+mi}{377}\PY{p}{,} \PY{l+m+mi}{371}\PY{p}{,} \PY{l+m+mi}{375}\PY{p}{]}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ordered}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{l+m+mi}{1738}\PY{p}{,} \PY{l+m+mi}{1628}\PY{p}{,} \PY{l+m+mi}{1666}\PY{p}{,} \PY{l+m+mi}{1677}\PY{p}{,} \PY{l+m+mi}{1673}\PY{p}{,} \PY{l+m+mi}{1717}\PY{p}{,} \PY{l+m+mi}{1780}\PY{p}{,} \PY{l+m+mi}{1685}\PY{p}{,} \PY{l+m+mi}{1683}\PY{p}{,} \PY{l+m+mi}{1653}\PY{p}{]}
+\PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   unordered  ordered
+0        390     1738
+1        367     1628
+2        377     1666
+3        390     1677
+4        382     1673
+5        367     1717
+6        383     1780
+7        377     1685
+8        371     1683
+9        375     1653
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+unordered     377.9
+ordered      1690.0
+dtype: float64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{config} InlineBackend.figure\PYZus{}formats = [\PYZdq{}svg\PYZdq{}]
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{o}{.}\PY{n}{bar}\PY{p}{(}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Performance comparison (less is better)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{ylabel}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{time, [\PYZdl{}ms\PYZdl{}]}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<Axes: title=\{'center': 'Performance comparison (less is better)'\},
+ylabel='time, [\$ms\$]'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_46_1.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{wnioski}{%
+\section{Wnioski}\label{wnioski}}
+
+\begin{itemize}
+\item
+  Teoria komunikujących się sekwencyjnych procesów (CSP) C.A.R. Hoare'a
+  dostarcza formalne podejście do opisu współbieżności i zbiór technik
+  projektowania współbieżnych programów.
+\item
+  Procesy CSP nie mają wspólnej przestrzeni adresowej, nie mają
+  interfejsu metod ani tożsamości, a komunikują się tylko za pomocą
+  kanałów.
+\item
+  Kanały CSP są synchroniczne, obsługują tylko odczyt i zapis, a
+  podstawowym typem kanałów jest \emph{one-to-one}.
+\item
+  Pakiet JCSP, opracowany na University of Kent, to platforma wykonawcza
+  dla programów współbieżnych w Javie, która wspiera konstrukcje CSP.
+\item
+  W JCSP, interfejsy \texttt{ChannelInput}, \texttt{ChannelOutput} i
+  \texttt{Channel} działają na argumentach typu \texttt{Object} lub
+  \texttt{int}.
+\item
+  Interfejs \texttt{CSProcess} opisuje procesy wspierając tylko metodę
+  \texttt{run}.
+\item
+  Operator wyboru \texttt{{[}{]}} jest obsługiwany za pośrednictwem
+  klasy \texttt{Alternative}, która wspiera metody \texttt{select} i
+  \texttt{fairSelect}.
+\item
+  Dodatkowo, JCSP oferuje narzędzia takie jak \emph{timer},
+  \texttt{Generate}, \texttt{Skip} i klasy umożliwiające interakcję
+  poprzez GUI.
+\item
+  Jak widać z wykresu oraz tabeli, pobieranie elementów przez konsumenta
+  bez zachowania kolejności (\texttt{unordered}) jest zdecydowanie
+  szybsze niż z zachowaniem kolejności (\texttt{ordered}).
+\end{itemize}
+
+    \hypertarget{bibliografia}{%
+\section{Bibliografia}\label{bibliografia}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Materiały do laboratorium 13, dr inż. Włodzimierz Funika:\\
+  \url{https://home.agh.edu.pl/~funika/tw/lab-csp/}
+\item
+  \texttt{Channel}, University of Kent JCSP Reference:\\
+  \url{https://www.cs.kent.ac.uk/projects/ofa/jcsp/jcsp-1.1-rc4/jcsp-doc/org/jcsp/lang/Channel.html}
+\end{enumerate}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
